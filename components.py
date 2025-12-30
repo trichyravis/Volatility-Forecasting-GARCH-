@@ -325,7 +325,7 @@ class StatsDisplay:
 
 class Footer:
     """
-    Professional footer component
+    Professional footer component using pure Streamlit (no HTML)
     
     Usage:
         Footer.render(
@@ -344,19 +344,48 @@ class Footer:
         social_links: Optional[Dict[str, str]] = None,
         disclaimer: str = ""
     ):
-        """Render footer"""
+        """Render footer using pure Streamlit components"""
         st.markdown("---")
-        st.markdown(
-            get_footer_html(title, description, author, social_links),
-            unsafe_allow_html=True
-        )
         
-        if disclaimer:
-            st.markdown(f"""
-            <div style="text-align: center; color: #999; font-size: 12px; margin-top: 1rem;">
-                <p>{disclaimer}</p>
-            </div>
-            """, unsafe_allow_html=True)
+        # Center content with columns
+        col1, col2, col3 = st.columns([1, 2, 1])
+        
+        with col2:
+            # Title
+            st.markdown(f"### {title}")
+            
+            # Description
+            st.markdown(f"**{description}**")
+            
+            # Author
+            st.markdown(author)
+            
+            st.markdown("")
+            
+            # Social links as buttons
+            if social_links:
+                link_cols = st.columns(len(social_links))
+                for idx, (name, url) in enumerate(social_links.items()):
+                    with link_cols[idx]:
+                        if name == "LinkedIn":
+                            emoji = "🔗"
+                        elif name == "GitHub":
+                            emoji = "🐙"
+                        else:
+                            emoji = "📧"
+                        st.markdown(f"[{emoji} **{name}**]({url})")
+            
+            st.markdown("")
+            
+            # Disclaimer
+            if disclaimer:
+                st.warning(disclaimer)
+            
+            st.markdown("")
+            
+            # Copyright
+            st.markdown("© 2025 The Mountain Path - World of Finance | All Rights Reserved")
+            st.markdown("*Built with ❤️ using Streamlit, GARCH & EGARCH Models*")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # EXPANDER COMPONENT (ENHANCED)
