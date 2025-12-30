@@ -157,12 +157,12 @@ with st.sidebar:
     
     # Configuration info
     with st.expander("⚙️ Selected Configuration"):
-        st.write(f"**Asset Class:** {asset_type}")
-        st.write(f"**Selected Asset:** {selected_asset}")
-        st.write(f"**Symbol:** `{symbol}`")
-        st.write(f"**Years:** {years}")
-        st.write(f"**Forecast Days:** {forecast_days}")
-        st.write(f"**Models:** {', '.join(models)}")
+        st.markdown(f"**Asset Class:** {asset_type}")
+        st.markdown(f"**Selected Asset:** {selected_asset}")
+        st.markdown(f"<span style='color: #DC3545; font-weight: 700;'>**Symbol:**</span> `{symbol}`", unsafe_allow_html=True)
+        st.markdown(f"**Years:** {years}")
+        st.markdown(f"**Forecast Days:** {forecast_days}")
+        st.markdown(f"**Models:** {', '.join(models)}")
     
     st.markdown("---")
     st.write("**About This Tool**")
