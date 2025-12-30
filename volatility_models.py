@@ -1,8 +1,8 @@
 
 """
 ═══════════════════════════════════════════════════════════════════════════════
-VOLATILITY MODELS - GARCH & EGARCH (FIXED VERSION)
-Proper pandas Series handling + Safe parameter extraction
+VOLATILITY MODELS - GARCH & EGARCH (ENHANCED DEBUG VERSION)
+Proper pandas Series handling + Comprehensive parameter extraction
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
@@ -16,10 +16,24 @@ warnings.filterwarnings('ignore')
 class VolatilityModels:
     
     @staticmethod
+    def print_all_params(results, model_name=""):
+        """Debug function to print all available parameters"""
+        print(f"\n{'='*70}")
+        print(f"DEBUG: All Parameters for {model_name}")
+        print(f"{'='*70}")
+        print(f"Parameter names: {list(results.params.index)}")
+        print(f"\nParameter values:")
+        for name in results.params.index:
+            val = results.params[name]
+            se = results.std_err[name] if name in results.std_err else np.nan
+            print(f"  {name:20s} = {val:12.8f} (SE: {se:10.8f})")
+        print(f"{'='*70}\n")
+    
+    @staticmethod
     def fit_garch(returns: pd.Series, p: int = 1, q: int = 1, forecast_periods: int = 20) -> Tuple:
         """Fit GARCH(1,1) model and generate forecasts"""
         try:
-            # KEEP AS PANDAS SERIES - critical!
+            # KEEP AS PANDAS SERIES
             returns_clean = returns.dropna()
             
             if len(returns_clean) < 50:
@@ -31,6 +45,9 @@ class VolatilityModels:
                 results = model.fit(disp='off', show_warning=False, options={'maxiter': 1000})
             except:
                 results = model.fit(disp='off', show_warning=False)
+            
+            # Debug print
+            VolatilityModels.print_all_params(results, "GARCH")
             
             try:
                 forecast_obj = results.forecast(horizon=forecast_periods)
@@ -51,7 +68,7 @@ class VolatilityModels:
     def fit_egarch(returns: pd.Series, p: int = 1, q: int = 1, forecast_periods: int = 20) -> Tuple:
         """Fit EGARCH(1,1) model and generate forecasts"""
         try:
-            # KEEP AS PANDAS SERIES - critical!
+            # KEEP AS PANDAS SERIES
             returns_clean = returns.dropna()
             
             if len(returns_clean) < 50:
@@ -63,6 +80,9 @@ class VolatilityModels:
                 results = model.fit(disp='off', show_warning=False, options={'maxiter': 1000})
             except:
                 results = model.fit(disp='off', show_warning=False)
+            
+            # Debug print
+            VolatilityModels.print_all_params(results, "EGARCH")
             
             try:
                 forecast_obj = results.forecast(horizon=forecast_periods)
@@ -104,77 +124,83 @@ class VolatilityModels:
     
     @staticmethod
     def extract_model_parameters(results) -> dict:
-        """Extract model parameters safely - handles all parameter names"""
+        """Extract model parameters - handles all parameter names"""
         try:
             params = results.params
             std_err = results.std_err
             
-            # Print all available parameters for debugging
-            print(f"Available parameters: {list(params.index)}")
-            print(f"Parameter values:\n{params}")
+            print(f"\nEXTRACTING PARAMETERS FROM {len(params)} available parameters")
+            print(f"Available parameter names: {list(params.index)}")
             
-            # Get Omega - try all possible names
+            # Get Omega
             omega = None
             omega_se = None
-            for key in ['Constant', 'const', 'mu']:
+            omega_key = None
+            
+            for key in ['Constant', 'const', 'mu', 'omega']:
                 if key in params:
                     omega = float(params[key])
                     omega_se = float(std_err[key])
-                    print(f"Found Omega as: {key}")
+                    omega_key = key
+                    print(f"✓ Found Omega as: {key}")
                     break
             
-            # If still not found, check if it's the first parameter
             if omega is None and len(params) > 0:
                 try:
                     omega = float(params.iloc[0])
                     omega_se = float(std_err.iloc[0])
-                    print(f"Found Omega as first parameter: {params.index[0]}")
+                    omega_key = params.index[0]
+                    print(f"✓ Found Omega as first parameter: {omega_key}")
                 except:
-                    omega = None
-                    omega_se = None
+                    pass
             
-            # Get Alpha - try all variations
+            # Get Alpha
             alpha = None
             alpha_se = None
             for key in params.index:
-                key_str = str(key).lower()
-                if 'alpha' in key_str:
+                if 'alpha' in str(key).lower():
                     alpha = float(params[key])
                     alpha_se = float(std_err[key])
-                    print(f"Found Alpha as: {key}")
+                    print(f"✓ Found Alpha as: {key}")
                     break
             
-            # Get Beta - try all variations
+            # Get Beta
             beta = None
             beta_se = None
             for key in params.index:
-                key_str = str(key).lower()
-                if 'beta' in key_str:
+                if 'beta' in str(key).lower():
                     beta = float(params[key])
                     beta_se = float(std_err[key])
-                    print(f"Found Beta as: {key}")
+                    print(f"✓ Found Beta as: {key}")
                     break
             
-            # Get Gamma - try all variations
+            # Get Gamma - COMPREHENSIVE SEARCH
             gamma = None
             gamma_se = None
             gamma_found = False
             
+            print(f"\nSearching for Gamma parameter...")
             for key in params.index:
-                key_str = str(key).lower()
-                # Try multiple gamma names
-                if any(g in key_str for g in ['gamma', 'leverage', 'asymmetry', 'skewness']):
+                key_lower = str(key).lower()
+                print(f"  Checking: {key} (lower: {key_lower})")
+                
+                # Try all possible gamma-related names
+                gamma_names = ['gamma', 'leverage', 'asymmetry', 'skew', 'news', 'arch_in_mean']
+                if any(gname in key_lower for gname in gamma_names):
                     try:
                         gamma = float(params[key])
                         gamma_se = float(std_err[key])
-                        print(f"Found Gamma as: {key}")
+                        print(f"✓ Found Gamma as: {key} = {gamma}")
                         gamma_found = True
                         break
-                    except:
+                    except Exception as e:
+                        print(f"  Error extracting {key}: {e}")
                         continue
             
             if not gamma_found:
-                print("Gamma parameter not found in results")
+                print(f"✗ Gamma parameter not found in results")
+                print(f"  Total parameters: {len(params)}")
+                print(f"  Parameter list: {list(params.index)}")
             
             return {
                 "omega": omega,
