@@ -149,6 +149,13 @@ def get_sidebar_css() -> str:
         border-radius: 6px !important;
     }}
     
+    /* Selected value display - VISIBLE TEXT */
+    [data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] span {{
+        color: #333 !important;
+        background-color: white !important;
+        font-weight: 500 !important;
+    }}
+    
     [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] > div {{
         background-color: white !important;
         color: #333 !important;
@@ -187,6 +194,16 @@ def get_sidebar_css() -> str:
         background-color: #DC3545 !important;
         color: white !important;
         border-radius: 4px !important;
+        font-weight: 600 !important;
+    }}
+    
+    /* Ensure text is visible in selectbox - ALL states */
+    [data-testid="stSidebar"] .stSelectbox div {{
+        color: #333 !important;
+    }}
+    
+    [data-testid="stSidebar"] .stSelectbox {{
+        color: #333 !important;
     }}
     
     /* Slider styling in sidebar */
