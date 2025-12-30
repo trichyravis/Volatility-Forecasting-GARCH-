@@ -66,6 +66,12 @@ with st.sidebar:
     st.write("GARCH(1,1) & EGARCH Model Analysis")
     st.markdown("---")
     
+    # Initialize session state for asset selection
+    if 'last_asset_class' not in st.session_state:
+        st.session_state.last_asset_class = "Equity Indices"
+    if 'selected_asset_index' not in st.session_state:
+        st.session_state.selected_asset_index = 0
+    
     # Asset selection
     col_asset_type = st.columns(1)
     with col_asset_type[0]:
@@ -73,8 +79,14 @@ with st.sidebar:
             "**Asset Class:**",
             options=["Equity Indices", "Nifty Stocks", "International Indices", "Commodities"],
             help="Choose asset class",
-            key="asset_class_selector"
+            key="asset_class_selector",
+            index=["Equity Indices", "Nifty Stocks", "International Indices", "Commodities"].index(st.session_state.last_asset_class)
         )
+    
+    # Track if asset class changed
+    if asset_type != st.session_state.last_asset_class:
+        st.session_state.last_asset_class = asset_type
+        st.session_state.selected_asset_index = 0
     
     # Asset choice based on class
     if asset_type == "Equity Indices":
@@ -84,20 +96,26 @@ with st.sidebar:
     elif asset_type == "Nifty Stocks":
         available_assets = [
             "TCS", "Infosys", "HDFC Bank", "ICICI Bank", "Reliance", 
-            "Axis Bank", "Maruti", "ITC", "Bajaj Finance", "Wipro"
+            "Axis Bank", "Maruti", "ITC", "Bajaj Finance", "Wipro",
+            "Kotak Bank", "State Bank of India", "Larsen & Toubro"
         ]
         symbols = [
             "TCS.NS", "INFY.NS", "HDFCBANK.NS", "ICICIBANK.NS", "RELIANCE.NS",
-            "AXISBANK.NS", "MARUTI.NS", "ITC.NS", "BAJAJFINSV.NS", "WIPRO.NS"
+            "AXISBANK.NS", "MARUTI.NS", "ITC.NS", "BAJAJFINSV.NS", "WIPRO.NS",
+            "KOTAKBANK.NS", "SBIN.NS", "LT.NS"
         ]
     
     elif asset_type == "International Indices":
-        available_assets = ["S&P 500", "NASDAQ", "Dow Jones"]
-        symbols = ["^GSPC", "^IXIC", "^DJI"]
+        available_assets = ["S&P 500", "NASDAQ", "Dow Jones", "Russell 2000"]
+        symbols = ["^GSPC", "^IXIC", "^DJI", "^RUT"]
     
     else:  # Commodities
-        available_assets = ["Gold", "Silver", "Crude Oil", "Natural Gas"]
-        symbols = ["GC=F", "SI=F", "CL=F", "NG=F"]
+        available_assets = ["Gold", "Silver", "Crude Oil", "Natural Gas", "Copper"]
+        symbols = ["GC=F", "SI=F", "CL=F", "NG=F", "HG=F"]
+    
+    # Ensure selected index is valid
+    if st.session_state.selected_asset_index >= len(available_assets):
+        st.session_state.selected_asset_index = 0
     
     col_asset_select = st.columns(1)
     with col_asset_select[0]:
@@ -105,8 +123,12 @@ with st.sidebar:
             "**Select Asset:**",
             options=available_assets,
             help="Choose specific asset",
-            key="asset_selector"
+            key="asset_selector",
+            index=st.session_state.selected_asset_index
         )
+    
+    # Update selected index
+    st.session_state.selected_asset_index = available_assets.index(selected_asset)
     
     asset_index = available_assets.index(selected_asset)
     symbol = symbols[asset_index]
@@ -131,6 +153,17 @@ with st.sidebar:
     )
     
     st.markdown("---")
+    
+    # Debug info
+    with st.expander("🔧 Debug Info"):
+        st.write(f"**Asset Class:** {asset_type}")
+        st.write(f"**Selected Asset:** {selected_asset}")
+        st.write(f"**Symbol:** `{symbol}`")
+        st.write(f"**Years:** {years}")
+        st.write(f"**Forecast Days:** {forecast_days}")
+        st.write(f"**Models:** {', '.join(models)}")
+    
+    st.markdown("---")
     st.write("**About This Tool**")
     st.write("""
     Advanced volatility forecasting using:
@@ -147,23 +180,33 @@ with st.sidebar:
 st.markdown("---")
 st.markdown("### 📈 VOLATILITY ANALYSIS")
 
-# Fetch data
-with st.spinner(f"📊 Fetching {selected_asset} data..."):
-    try:
-        data = DataFetcher.fetch_stock_data(symbol, period=f"{years}y")
-        
-        if data is None or len(data) < 100:
-            st.error(f"❌ Insufficient data for {selected_asset}. Please try another asset or longer period.")
+# Fetch data with better error handling
+data_fetch_placeholder = st.empty()
+with data_fetch_placeholder.container():
+    with st.spinner(f"📊 Fetching {selected_asset} ({symbol}) data..."):
+        try:
+            data = DataFetcher.fetch_stock_data(symbol, period=f"{years}y")
+            
+            if data is None:
+                st.error(f"❌ No data available for {selected_asset} ({symbol}). Please try another asset.")
+                st.info("💡 Tip: Try selecting a different asset or increasing the historical data period.")
+                st.stop()
+            
+            if len(data) < 100:
+                st.warning(f"⚠️ Only {len(data)} trading days available for {selected_asset}. Model may be less reliable.")
+                if len(data) < 50:
+                    st.error(f"❌ Insufficient data ({len(data)} days < 50 minimum). Please try another asset.")
+                    st.stop()
+            
+            # Calculate returns
+            returns = np.log(data['Close'] / data['Close'].shift(1)).dropna() * 100
+            
+            st.success(f"✅ Loaded {len(data)} trading days for {selected_asset}")
+            
+        except Exception as e:
+            st.error(f"❌ Error fetching data for {selected_asset}: {str(e)}")
+            st.info("💡 Possible causes:\n- Invalid ticker symbol\n- Yahoo Finance service issue\n- Network connectivity problem\n\nPlease try another asset.")
             st.stop()
-        
-        # Calculate returns
-        returns = np.log(data['Close'] / data['Close'].shift(1)).dropna() * 100
-        
-        st.success(f"✅ Loaded {len(data)} trading days for {selected_asset}")
-        
-    except Exception as e:
-        st.error(f"❌ Error fetching data: {str(e)}")
-        st.stop()
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # MODEL FITTING & FORECASTING
