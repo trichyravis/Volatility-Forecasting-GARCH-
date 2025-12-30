@@ -37,6 +37,7 @@ def apply_main_styles():
         {get_hero_css()}
         {get_metric_card_css()}
         {get_buttons_css()}
+        {get_tabs_css()}
         {get_responsive_css()}
         {get_animations_css()}
         </style>
@@ -435,6 +436,67 @@ def get_buttons_css() -> str:
     
     .accent-button:hover {{
         opacity: 0.85;
+    }}
+    """
+
+def get_tabs_css() -> str:
+    """Professional tab styling with blue background and gold/white text"""
+    return f"""
+    /* Tab container styling */
+    [data-baseweb="tab-list"] {{
+        background-color: #003366 !important;
+        padding: 8px !important;
+        border-radius: 8px !important;
+        gap: 4px !important;
+    }}
+    
+    /* Individual tab styling - INACTIVE (Dark Blue) */
+    [data-baseweb="tab"] {{
+        background-color: #003366 !important;
+        color: #FFD700 !important;
+        font-weight: 700 !important;
+        font-size: 16px !important;
+        padding: 12px 20px !important;
+        border-radius: 6px !important;
+        border: 2px solid transparent !important;
+        text-transform: none !important;
+        letter-spacing: 0.5px !important;
+    }}
+    
+    /* Tab text styling - INACTIVE */
+    [data-baseweb="tab"] span {{
+        color: #FFD700 !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+    }}
+    
+    /* Active tab styling - BRIGHT BLUE with GOLD TEXT */
+    [data-baseweb="tab"][aria-selected="true"] {{
+        background-color: #0066CC !important;
+        color: #FFD700 !important;
+        font-weight: 700 !important;
+        font-size: 16px !important;
+        border: 2px solid #FFD700 !important;
+        box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3) !important;
+    }}
+    
+    /* Active tab text styling */
+    [data-baseweb="tab"][aria-selected="true"] span {{
+        color: #FFD700 !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+    }}
+    
+    /* Tab hover state */
+    [data-baseweb="tab"]:hover {{
+        background-color: #004d99 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.4) !important;
+    }}
+    
+    /* Tab divider/separator */
+    [data-baseweb="tab-list"]::after {{
+        background-color: #003366 !important;
     }}
     """
 
