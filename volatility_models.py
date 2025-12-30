@@ -1,153 +1,87 @@
 
 """
 ═══════════════════════════════════════════════════════════════════════════════
-VOLATILITY MODELS - GARCH & EGARCH
-Generalized Autoregressive Conditional Heteroskedasticity Models
-BULLETPROOF VERSION WITH ROBUST ERROR HANDLING
+VOLATILITY MODELS - GARCH & EGARCH (FIXED VERSION)
+Proper pandas Series handling + Safe parameter extraction
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
 import numpy as np
 import pandas as pd
 from arch import arch_model
-from typing import Tuple, Optional
+from typing import Tuple
 import warnings
 warnings.filterwarnings('ignore')
 
 class VolatilityModels:
-    """
-    Implement GARCH(1,1) and EGARCH(1,1) models for volatility forecasting
-    Bulletproof version with extensive error handling and fallbacks
-    """
     
     @staticmethod
-    def fit_garch(
-        returns: pd.Series,
-        p: int = 1,
-        q: int = 1,
-        forecast_periods: int = 20
-    ) -> Tuple:
-        """
-        Fit GARCH(p,q) model and generate forecasts - BULLETPROOF VERSION
-        
-        GARCH(1,1) Model:
-        ────────────────
-        σ_t² = ω + α*ε_{t-1}² + β*σ_{t-1}²
-        """
+    def fit_garch(returns: pd.Series, p: int = 1, q: int = 1, forecast_periods: int = 20) -> Tuple:
+        """Fit GARCH(1,1) model and generate forecasts"""
         try:
-            # Ensure returns are clean
-            returns_clean = returns.dropna().values
+            # KEEP AS PANDAS SERIES - critical!
+            returns_clean = returns.dropna()
             
             if len(returns_clean) < 50:
                 raise ValueError(f"Insufficient data: {len(returns_clean)} observations")
             
-            # Fit GARCH model with robust settings
-            model = arch_model(
-                returns_clean,
-                vol='Garch',
-                p=p,
-                q=q,
-                rescale=False
-            )
+            model = arch_model(returns_clean, vol='Garch', p=p, q=q, rescale=False)
             
-            # Fit with multiple tries
             try:
-                results = model.fit(
-                    disp='off',
-                    show_warning=False,
-                    options={'maxiter': 1000}
-                )
+                results = model.fit(disp='off', show_warning=False, options={'maxiter': 1000})
             except:
-                # Fallback: simpler fitting
                 results = model.fit(disp='off', show_warning=False)
             
-            # Generate forecast
             try:
                 forecast_obj = results.forecast(horizon=forecast_periods)
                 forecast_variance = forecast_obj.variance.values[-1, :]
-                forecast_volatility = np.sqrt(forecast_variance) * 100
+                forecast_volatility = np.sqrt(forecast_variance)
             except:
-                # Fallback forecast
                 cond_vol = results.conditional_volatility
                 last_vol = cond_vol.iloc[-1]
-                forecast_volatility = np.full(forecast_periods, last_vol * 100)
+                forecast_volatility = np.full(forecast_periods, last_vol)
             
             return results, forecast_volatility
             
         except Exception as e:
-            print(f"❌ GARCH Error: {str(e)}")
+            print(f"GARCH Error: {str(e)}")
             raise
     
     @staticmethod
-    def fit_egarch(
-        returns: pd.Series,
-        p: int = 1,
-        q: int = 1,
-        forecast_periods: int = 20
-    ) -> Tuple:
-        """
-        Fit EGARCH(p,q) model and generate forecasts - BULLETPROOF VERSION
-        """
+    def fit_egarch(returns: pd.Series, p: int = 1, q: int = 1, forecast_periods: int = 20) -> Tuple:
+        """Fit EGARCH(1,1) model and generate forecasts"""
         try:
-            # Ensure returns are clean
-            returns_clean = returns.dropna().values
+            # KEEP AS PANDAS SERIES - critical!
+            returns_clean = returns.dropna()
             
             if len(returns_clean) < 50:
                 raise ValueError(f"Insufficient data: {len(returns_clean)} observations")
             
-            # Fit EGARCH model
-            model = arch_model(
-                returns_clean,
-                vol='EGarch',
-                p=p,
-                q=q,
-                rescale=False
-            )
+            model = arch_model(returns_clean, vol='EGarch', p=p, q=q, rescale=False)
             
-            # Fit with multiple tries
             try:
-                results = model.fit(
-                    disp='off',
-                    show_warning=False,
-                    options={'maxiter': 1000}
-                )
+                results = model.fit(disp='off', show_warning=False, options={'maxiter': 1000})
             except:
                 results = model.fit(disp='off', show_warning=False)
             
-            # Generate forecast
             try:
                 forecast_obj = results.forecast(horizon=forecast_periods)
                 forecast_variance = forecast_obj.variance.values[-1, :]
-                forecast_volatility = np.sqrt(forecast_variance) * 100
+                forecast_volatility = np.sqrt(forecast_variance)
             except:
-                # Fallback forecast
                 cond_vol = results.conditional_volatility
                 last_vol = cond_vol.iloc[-1]
-                forecast_volatility = np.full(forecast_periods, last_vol * 100)
+                forecast_volatility = np.full(forecast_periods, last_vol)
             
             return results, forecast_volatility
             
         except Exception as e:
-            print(f"❌ EGARCH Error: {str(e)}")
+            print(f"EGARCH Error: {str(e)}")
             raise
-    
-    @staticmethod
-    def safe_get_param(params, keys_to_try):
-        """
-        Safely extract parameter, trying multiple key names
-        """
-        if isinstance(params, dict):
-            for key in keys_to_try:
-                if key in params:
-                    return params[key]
-        
-        return np.nan
     
     @staticmethod
     def compare_models(returns: pd.Series) -> dict:
-        """
-        Fit both GARCH and EGARCH, return comparison metrics
-        """
+        """Compare GARCH and EGARCH models"""
         try:
             garch_results, _ = VolatilityModels.fit_garch(returns, forecast_periods=1)
             egarch_results, _ = VolatilityModels.fit_egarch(returns, forecast_periods=1)
@@ -165,39 +99,43 @@ class VolatilityModels:
                 }
             }
         except Exception as e:
-            print(f"❌ Comparison Error: {str(e)}")
+            print(f"Comparison Error: {str(e)}")
             return None
     
     @staticmethod
     def extract_model_parameters(results) -> dict:
-        """
-        Extract model parameters with safe fallbacks
-        """
+        """Extract model parameters safely"""
         try:
             params = results.params
             std_err = results.std_err
             
-            # Try multiple key names
-            constant_keys = ['Constant', 'const', 'Intercept']
-            omega = VolatilityModels.safe_get_param(params, constant_keys)
-            omega_se = VolatilityModels.safe_get_param(std_err, constant_keys)
+            # Get Omega (Constant) - try multiple names
+            if 'Constant' in params:
+                omega = params['Constant']
+                omega_se = std_err['Constant']
+            elif 'const' in params:
+                omega = params['const']
+                omega_se = std_err['const']
+            else:
+                omega = None
+                omega_se = None
             
-            alpha_keys = ['alpha[1]', 'Alpha', 'alpha']
-            alpha = VolatilityModels.safe_get_param(params, alpha_keys)
-            alpha_se = VolatilityModels.safe_get_param(std_err, alpha_keys)
+            # Get Alpha
+            alpha = params.get('alpha[1]', None)
+            alpha_se = std_err.get('alpha[1]', None) if alpha is not None else None
             
-            beta_keys = ['beta[1]', 'Beta', 'beta']
-            beta = VolatilityModels.safe_get_param(params, beta_keys)
-            beta_se = VolatilityModels.safe_get_param(std_err, beta_keys)
+            # Get Beta
+            beta = params.get('beta[1]', None)
+            beta_se = std_err.get('beta[1]', None) if beta is not None else None
             
             return {
-                "Omega (ω)": omega,
-                "Omega SE": omega_se,
-                "Alpha (α)": alpha,
-                "Alpha SE": alpha_se,
-                "Beta (β)": beta,
-                "Beta SE": beta_se,
+                "omega": omega,
+                "omega_se": omega_se,
+                "alpha": alpha,
+                "alpha_se": alpha_se,
+                "beta": beta,
+                "beta_se": beta_se,
             }
         except Exception as e:
-            print(f"⚠️ Parameter extraction error: {str(e)}")
+            print(f"Parameter extraction error: {str(e)}")
             return {}
