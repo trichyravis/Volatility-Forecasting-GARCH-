@@ -232,13 +232,20 @@ def get_sidebar_css() -> str:
         background-color: white !important;
     }}
     
-    /* Multi-select tag styling - Red with white text */
+    /* Multi-select tag styling - CLEAN like selectbox (no red) */
     [data-testid="stSidebar"] .stMultiSelect [data-baseweb="tag"] {{
-        background-color: #DC3545 !important;
-        color: white !important;
+        background-color: #f0f0f0 !important;
+        color: #333 !important;
+        border: none !important;
         border-radius: 4px !important;
-        font-weight: 600 !important;
+        font-weight: 500 !important;
         padding: 4px 8px !important;
+        margin: 2px 4px !important;
+    }}
+    
+    /* Remove X button red color */
+    [data-testid="stSidebar"] .stMultiSelect [data-baseweb="tag"] [aria-label*="close"] {{
+        color: #666 !important;
     }}
     
     /* Multi-select option styling */
