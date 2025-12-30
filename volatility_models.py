@@ -1,3 +1,4 @@
+
 """
 ═══════════════════════════════════════════════════════════════════════════════
 VOLATILITY MODELS - GARCH & EGARCH
@@ -62,8 +63,8 @@ class VolatilityModels:
             
             results = model.fit(disp='off')
             
-            # Generate forecast
-            forecast = results.get_forecast(horizon=forecast_periods)
+            # Generate forecast using correct method name
+            forecast = results.forecast(horizon=forecast_periods)
             forecast_variance = forecast.variance.values[-1, :] / 10000  # Convert back to variance
             forecast_volatility = np.sqrt(forecast_variance)
             
@@ -122,8 +123,8 @@ class VolatilityModels:
             
             results = model.fit(disp='off')
             
-            # Generate forecast
-            forecast = results.get_forecast(horizon=forecast_periods)
+            # Generate forecast using correct method name
+            forecast = results.forecast(horizon=forecast_periods)
             forecast_variance = forecast.variance.values[-1, :] / 10000
             forecast_volatility = np.sqrt(forecast_variance)
             
