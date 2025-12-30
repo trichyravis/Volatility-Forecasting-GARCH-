@@ -136,14 +136,6 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Period selection
-    st.write("### ⏱️ TIME PERIOD")
-    years = st.slider("**Years of Historical Data:**", 1, 10, 3, help="Historical data for model training", key="years_slider")
-    
-    forecast_days = st.slider("**Forecast Period (Days):**", 5, 60, 20, help="Number of days to forecast", key="forecast_days_slider")
-    
-    st.markdown("---")
-    
     # Model selection with RED visible label using markdown
     st.markdown("<span style='color: #DC3545; font-weight: 700; font-size: 14px;'>🔧 Select Models:</span>", unsafe_allow_html=True)
     models = st.multiselect(
@@ -154,6 +146,14 @@ with st.sidebar:
         key="model_selector",
         label_visibility="collapsed"
     )
+    
+    st.markdown("---")
+    
+    # Period selection
+    st.write("### ⏱️ TIME PERIOD")
+    years = st.slider("**Years of Historical Data:**", 1, 10, 3, help="Historical data for model training", key="years_slider")
+    
+    forecast_days = st.slider("**Forecast Period (Days):**", 5, 60, 20, help="Number of days to forecast", key="forecast_days_slider")
     
     st.markdown("---")
     
