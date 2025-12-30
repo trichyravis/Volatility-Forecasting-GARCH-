@@ -325,15 +325,8 @@ class StatsDisplay:
 
 class Footer:
     """
-    Professional footer component using pure Streamlit (no HTML)
-    
-    Usage:
-        Footer.render(
-            title="YOUR APP NAME",
-            description="App description",
-            author="Your Name",
-            social_links={"LinkedIn": "url", "GitHub": "url"}
-        )
+    Professional footer component with Mountain Path design styling
+    Uses color scheme and styling from original design
     """
     
     @staticmethod
@@ -344,48 +337,151 @@ class Footer:
         social_links: Optional[Dict[str, str]] = None,
         disclaimer: str = ""
     ):
-        """Render footer using pure Streamlit components"""
-        st.markdown("---")
+        """Render footer with custom design styling"""
         
-        # Center content with columns
-        col1, col2, col3 = st.columns([1, 2, 1])
+        # Apply custom CSS for footer styling (matching original design)
+        st.markdown("""
+        <style>
+        .footer-section {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
         
-        with col2:
-            # Title
-            st.markdown(f"### {title}")
+        .footer-title {
+            color: #003366;
+            font-size: 28px;
+            font-weight: 900;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+        
+        .footer-description {
+            color: #004d80;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+        
+        .footer-author {
+            color: #666;
+            font-size: 14px;
+            margin: 0.5rem 0;
+        }
+        
+        .footer-buttons {
+            margin: 1.5rem 0;
+        }
+        
+        .footer-button {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            margin: 0 0.5rem;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: transform 0.2s ease;
+        }
+        
+        .footer-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .footer-button-linkedin {
+            background: linear-gradient(135deg, #0077b5 0%, #0a66c2 100%);
+        }
+        
+        .footer-button-github {
+            background: linear-gradient(135deg, #333 0%, #555 100%);
+        }
+        
+        .footer-button-email {
+            background: linear-gradient(135deg, #0077b5 0%, #0a66c2 100%);
+        }
+        
+        .footer-disclaimer {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            font-size: 13px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .footer-copyright {
+            color: #999;
+            font-size: 12px;
+            margin-top: 1.5rem;
+        }
+        
+        .footer-divider {
+            border-top: 2px solid #003366;
+            margin: 2rem 0;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        # Render footer using HTML with applied design
+        st.markdown("<div class='footer-divider'></div>", unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="footer-section">
+        """, unsafe_allow_html=True)
+        
+        # Title
+        st.markdown(f"<p class='footer-title'>{title}</p>", unsafe_allow_html=True)
+        
+        # Description
+        st.markdown(f"<p class='footer-description'>{description}</p>", unsafe_allow_html=True)
+        
+        # Author
+        st.markdown(f"<p class='footer-author'>{author}</p>", unsafe_allow_html=True)
+        
+        # Social Links
+        if social_links:
+            st.markdown("<div class='footer-buttons'>", unsafe_allow_html=True)
             
-            # Description
-            st.markdown(f"**{description}**")
+            for name, url in social_links.items():
+                if name == "LinkedIn":
+                    emoji = "🔗"
+                    css_class = "footer-button footer-button-linkedin"
+                elif name == "GitHub":
+                    emoji = "🐙"
+                    css_class = "footer-button footer-button-github"
+                else:
+                    emoji = "📧"
+                    css_class = "footer-button footer-button-email"
+                
+                st.markdown(
+                    f'<a href="{url}" target="_blank" class="{css_class}">{emoji} {name}</a>',
+                    unsafe_allow_html=True
+                )
             
-            # Author
-            st.markdown(author)
-            
-            st.markdown("")
-            
-            # Social links as buttons
-            if social_links:
-                link_cols = st.columns(len(social_links))
-                for idx, (name, url) in enumerate(social_links.items()):
-                    with link_cols[idx]:
-                        if name == "LinkedIn":
-                            emoji = "🔗"
-                        elif name == "GitHub":
-                            emoji = "🐙"
-                        else:
-                            emoji = "📧"
-                        st.markdown(f"[{emoji} **{name}**]({url})")
-            
-            st.markdown("")
-            
-            # Disclaimer
-            if disclaimer:
-                st.warning(disclaimer)
-            
-            st.markdown("")
-            
-            # Copyright
-            st.markdown("© 2025 The Mountain Path - World of Finance | All Rights Reserved")
-            st.markdown("*Built with ❤️ using Streamlit, GARCH & EGARCH Models*")
+            st.markdown("</div>", unsafe_allow_html=True)
+        
+        # Disclaimer
+        if disclaimer:
+            st.markdown(
+                f'<div class="footer-disclaimer"><strong>⚠️ Disclaimer:</strong> {disclaimer}</div>',
+                unsafe_allow_html=True
+            )
+        
+        # Copyright
+        st.markdown(
+            '<p class="footer-copyright">© 2025 The Mountain Path - World of Finance | All Rights Reserved</p>',
+            unsafe_allow_html=True
+        )
+        st.markdown(
+            '<p class="footer-copyright"><em>Built with ❤️ using Streamlit, GARCH & EGARCH Models</em></p>',
+            unsafe_allow_html=True
+        )
+        
+        st.markdown("</div>", unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # EXPANDER COMPONENT (ENHANCED)
