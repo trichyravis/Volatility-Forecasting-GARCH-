@@ -317,12 +317,12 @@ def get_hero_css() -> str:
         background: {HERO_HEADER['background_gradient']};
         padding: {HERO_HEADER['padding']};
         border-radius: {HERO_HEADER['border_radius']};
-        margin: 0rem auto 2rem auto;
+        margin: 0rem auto 0.8rem auto;
         box-shadow: {HERO_HEADER['box_shadow']};
         border: {HERO_HEADER['border_width']} solid {HERO_HEADER['border_color']};
         display: flex;
         align-items: center;
-        gap: 2rem;
+        gap: 1rem;
         max-width: {HERO_HEADER['max_width']};
         width: 90%;
     }}
@@ -343,16 +343,16 @@ def get_hero_css() -> str:
         font-size: {HERO_HEADER['title_font_size']};
         font-weight: {HERO_HEADER['title_font_weight']};
         color: {HERO_HEADER['title_color']};
-        margin: 0.1rem 0;
+        margin: 0.05rem 0;
         text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
         letter-spacing: {HERO_HEADER['title_letter_spacing']};
-        line-height: 1.1;
+        line-height: 1;
     }}
     
     .hero-text-right p:first-of-type {{
         font-size: {HERO_HEADER['subtitle_font_size']};
         color: {HERO_HEADER['subtitle_color']};
-        margin: 0.8rem 0 0.3rem 0;
+        margin: 0.3rem 0 0.2rem 0;
         font-weight: {HERO_HEADER['subtitle_font_weight']};
         letter-spacing: 0.5px;
     }}
@@ -360,7 +360,7 @@ def get_hero_css() -> str:
     .hero-text-right p:last-of-type {{
         font-size: {HERO_HEADER['description_font_size']};
         color: {HERO_HEADER['description_color']};
-        margin: 0.3rem 0 0;
+        margin: 0.2rem 0 0;
         font-weight: {TYPOGRAPHY['normal']};
     }}
     """
