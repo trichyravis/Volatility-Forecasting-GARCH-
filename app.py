@@ -136,15 +136,16 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Model selection with RED visible label using markdown
+    # Model selection with radio buttons - only ONE option can be selected
     st.markdown("<span style='color: #DC3545; font-weight: 700; font-size: 14px;'>🔧 Select Models:</span>", unsafe_allow_html=True)
-    models = st.multiselect(
+    models = st.radio(
         "Models",
         options=["GARCH(1,1)", "EGARCH(1,1)", "Both"],
-        default=["GARCH(1,1)"],
-        help="Choose volatility models to compare",
+        default="GARCH(1,1)",
+        help="Choose ONE volatility model for analysis",
         key="model_selector",
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        horizontal=False
     )
     
     st.markdown("---")
@@ -164,7 +165,7 @@ with st.sidebar:
         st.markdown(f"**Symbol:** <span style='color: #DC3545; font-weight: 700; font-family: monospace;'>{symbol}</span>", unsafe_allow_html=True)
         st.markdown(f"**Years:** <span style='color: #DC3545; font-weight: 700;'>{years}</span>", unsafe_allow_html=True)
         st.markdown(f"**Forecast Days:** <span style='color: #DC3545; font-weight: 700;'>{forecast_days}</span>", unsafe_allow_html=True)
-        st.markdown(f"**Models:** <span style='color: #DC3545; font-weight: 700;'>{', '.join(models)}</span>", unsafe_allow_html=True)
+        st.markdown(f"**Models:** <span style='color: #DC3545; font-weight: 700;'>{models}</span>", unsafe_allow_html=True)
     
     st.markdown("---")
     st.write("**About This Tool**")
