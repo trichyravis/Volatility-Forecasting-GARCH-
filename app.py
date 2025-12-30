@@ -72,16 +72,16 @@ with st.sidebar:
     if 'selected_asset_index' not in st.session_state:
         st.session_state.selected_asset_index = 0
     
-    # Asset selection
-    col_asset_type = st.columns(1)
-    with col_asset_type[0]:
-        asset_type = st.selectbox(
-            "**Asset Class:**",
-            options=["Equity Indices", "Nifty Stocks", "International Indices", "Commodities"],
-            help="Choose asset class",
-            key="asset_class_selector",
-            index=["Equity Indices", "Nifty Stocks", "International Indices", "Commodities"].index(st.session_state.last_asset_class)
-        )
+    # Asset selection - with visible styling
+    st.markdown("**Asset Class:**")
+    asset_type = st.selectbox(
+        label="Asset Class",
+        options=["Equity Indices", "Nifty Stocks", "International Indices", "Commodities"],
+        help="Choose asset class",
+        key="asset_class_selector",
+        index=["Equity Indices", "Nifty Stocks", "International Indices", "Commodities"].index(st.session_state.last_asset_class),
+        label_visibility="collapsed"
+    )
     
     # Track if asset class changed
     if asset_type != st.session_state.last_asset_class:
@@ -117,15 +117,16 @@ with st.sidebar:
     if st.session_state.selected_asset_index >= len(available_assets):
         st.session_state.selected_asset_index = 0
     
-    col_asset_select = st.columns(1)
-    with col_asset_select[0]:
-        selected_asset = st.selectbox(
-            "**Select Asset:**",
-            options=available_assets,
-            help="Choose specific asset",
-            key="asset_selector",
-            index=st.session_state.selected_asset_index
-        )
+    # Select Asset - with visible styling
+    st.markdown("**Select Asset:**")
+    selected_asset = st.selectbox(
+        label="Select Asset",
+        options=available_assets,
+        help="Choose specific asset",
+        key="asset_selector",
+        index=st.session_state.selected_asset_index,
+        label_visibility="collapsed"
+    )
     
     # Update selected index
     st.session_state.selected_asset_index = available_assets.index(selected_asset)
