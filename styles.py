@@ -145,7 +145,7 @@ def get_sidebar_css() -> str:
     /* FIX: Selectbox visibility in dark sidebar */
     [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] {{
         background-color: white !important;
-        border: 2px solid #0077b5 !important;
+        border: 2px solid #DC3545 !important;
         border-radius: 6px !important;
     }}
     
@@ -162,11 +162,31 @@ def get_sidebar_css() -> str:
     [data-testid="stSidebar"] .stSelectbox [role="button"] {{
         background-color: white !important;
         color: #333 !important;
+        border: 2px solid #DC3545 !important;
     }}
     
     [data-testid="stSidebar"] .stSelectbox [role="option"] {{
         background-color: white !important;
         color: #333 !important;
+    }}
+    
+    /* MultiSelect styling - Red theme */
+    [data-testid="stSidebar"] .stMultiSelect div[data-baseweb="select"] {{
+        background-color: white !important;
+        border: 2px solid #DC3545 !important;
+        border-radius: 6px !important;
+    }}
+    
+    [data-testid="stSidebar"] .stMultiSelect div[data-baseweb="select"] input {{
+        color: #333 !important;
+        background-color: white !important;
+    }}
+    
+    /* Multi-select tag styling - Red */
+    [data-testid="stSidebar"] .stMultiSelect [data-baseweb="tag"] {{
+        background-color: #DC3545 !important;
+        color: white !important;
+        border-radius: 4px !important;
     }}
     
     /* Slider styling in sidebar */
