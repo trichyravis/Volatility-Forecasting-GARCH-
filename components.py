@@ -325,8 +325,8 @@ class StatsDisplay:
 
 class Footer:
     """
-    Professional footer component with Mountain Path design styling
-    Uses color scheme and styling from original design
+    Premium footer component with enhanced design styling
+    Improved layout, spacing, typography, and visual hierarchy
     """
     
     @staticmethod
@@ -337,114 +337,286 @@ class Footer:
         social_links: Optional[Dict[str, str]] = None,
         disclaimer: str = ""
     ):
-        """Render footer with custom design styling"""
+        """Render premium footer with enhanced design"""
         
-        # Apply custom CSS for footer styling (matching original design)
+        # Apply premium CSS styling
         st.markdown("""
         <style>
-        .footer-section {
+        
+        /* FOOTER CONTAINER */
+        .footer-wrapper {
+            background: linear-gradient(180deg, rgba(0, 51, 102, 0.02) 0%, rgba(0, 77, 128, 0.03) 100%);
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+            border-top: 3px solid #003366;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .footer-content {
+            max-width: 900px;
+            margin: 0 auto;
             text-align: center;
-            padding: 2rem;
-            margin-top: 2rem;
         }
         
-        .footer-title {
+        /* TITLE SECTION */
+        .footer-title-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-main-title {
             color: #003366;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 900;
-            margin: 0;
+            margin: 0 0 0.3rem 0;
             letter-spacing: 1px;
+            text-transform: uppercase;
+            word-spacing: 0.1em;
         }
         
-        .footer-description {
-            color: #004d80;
-            font-size: 16px;
+        .footer-subtitle {
+            color: #0077b5;
+            font-size: 15px;
             font-weight: 600;
-            margin: 0.5rem 0;
+            margin: 0.3rem 0 0 0;
+            letter-spacing: 0.5px;
         }
         
         .footer-author {
             color: #666;
-            font-size: 14px;
-            margin: 0.5rem 0;
+            font-size: 13px;
+            margin: 0.8rem 0 0 0;
+            font-weight: 500;
         }
         
-        .footer-buttons {
-            margin: 1.5rem 0;
+        /* BUTTONS SECTION - PREMIUM STYLING */
+        .footer-buttons-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
         }
         
         .footer-button {
-            display: inline-block;
-            padding: 0.5rem 1.5rem;
-            margin: 0 0.5rem;
-            border-radius: 5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
             color: white;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            transition: transform 0.2s ease;
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .footer-button:hover::before {
+            width: 300px;
+            height: 300px;
         }
         
         .footer-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .footer-button:active {
+            transform: translateY(-1px);
         }
         
         .footer-button-linkedin {
-            background: linear-gradient(135deg, #0077b5 0%, #0a66c2 100%);
+            background: linear-gradient(135deg, #0077b5 0%, #00a0d2 100%);
+        }
+        
+        .footer-button-linkedin:hover {
+            background: linear-gradient(135deg, #005a87 0%, #0077b5 100%);
         }
         
         .footer-button-github {
-            background: linear-gradient(135deg, #333 0%, #555 100%);
+            background: linear-gradient(135deg, #2d2d2d 0%, #434343 100%);
+        }
+        
+        .footer-button-github:hover {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
         }
         
         .footer-button-email {
-            background: linear-gradient(135deg, #0077b5 0%, #0a66c2 100%);
+            background: linear-gradient(135deg, #0077b5 0%, #00a0d2 100%);
+        }
+        
+        .footer-button-email:hover {
+            background: linear-gradient(135deg, #005a87 0%, #0077b5 100%);
+        }
+        
+        .footer-button span {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* DISCLAIMER SECTION - ENHANCED */
+        .footer-disclaimer-wrapper {
+            margin: 2rem 0;
         }
         
         .footer-disclaimer {
-            background-color: #fff3cd;
-            border: 1px solid #ffc107;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1.5rem 0;
+            background: linear-gradient(135deg, #fffbea 0%, #fff8dc 100%);
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
             font-size: 13px;
             color: #333;
+            line-height: 1.6;
             text-align: center;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.15);
+            font-weight: 500;
+        }
+        
+        .footer-disclaimer-title {
+            font-weight: 700;
+            color: #d9a90a;
+            margin-bottom: 0.5rem;
+            font-size: 14px;
+        }
+        
+        /* DIVIDER */
+        .footer-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, #003366 50%, transparent 100%);
+            margin: 2rem 0;
+        }
+        
+        /* FOOTER CREDIT SECTION */
+        .footer-credit-section {
+            margin-top: 2rem;
         }
         
         .footer-copyright {
-            color: #999;
+            color: #777;
             font-size: 12px;
-            margin-top: 1.5rem;
+            margin: 0.5rem 0;
+            font-weight: 500;
+            letter-spacing: 0.3px;
         }
         
-        .footer-divider {
-            border-top: 2px solid #003366;
-            margin: 2rem 0;
+        .footer-credit {
+            color: #999;
+            font-size: 12px;
+            margin: 0.5rem 0 0 0;
+            font-style: italic;
+            font-weight: 400;
         }
+        
+        /* PREMIUM BORDER TOP */
+        .footer-top-border {
+            height: 3px;
+            background: linear-gradient(90deg, #003366 0%, #0077b5 50%, #003366 100%);
+            margin-bottom: 2rem;
+            border-radius: 2px;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .footer-wrapper {
+                padding: 2rem 1rem;
+            }
+            
+            .footer-main-title {
+                font-size: 22px;
+                letter-spacing: 0.5px;
+            }
+            
+            .footer-subtitle {
+                font-size: 14px;
+            }
+            
+            .footer-button {
+                padding: 0.65rem 1.5rem;
+                font-size: 13px;
+            }
+            
+            .footer-buttons-wrapper {
+                gap: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .footer-wrapper {
+                padding: 1.5rem 1rem;
+                margin-top: 2rem;
+            }
+            
+            .footer-main-title {
+                font-size: 18px;
+                letter-spacing: 0px;
+                word-spacing: 0em;
+            }
+            
+            .footer-subtitle {
+                font-size: 13px;
+            }
+            
+            .footer-author {
+                font-size: 12px;
+            }
+            
+            .footer-button {
+                padding: 0.6rem 1.2rem;
+                font-size: 12px;
+            }
+            
+            .footer-buttons-wrapper {
+                gap: 0.5rem;
+                margin: 1.5rem 0;
+            }
+            
+            .footer-disclaimer {
+                padding: 1rem;
+                font-size: 12px;
+            }
+        }
+        
         </style>
         """, unsafe_allow_html=True)
         
-        # Render footer using HTML with applied design
-        st.markdown("<div class='footer-divider'></div>", unsafe_allow_html=True)
+        # RENDER FOOTER STRUCTURE
+        st.markdown('<div class="footer-wrapper">', unsafe_allow_html=True)
+        st.markdown('<div class="footer-content">', unsafe_allow_html=True)
         
-        st.markdown("""
-        <div class="footer-section">
-        """, unsafe_allow_html=True)
+        # TOP DECORATIVE BORDER
+        st.markdown('<div class="footer-top-border"></div>', unsafe_allow_html=True)
         
-        # Title
-        st.markdown(f"<p class='footer-title'>{title}</p>", unsafe_allow_html=True)
+        # TITLE SECTION
+        st.markdown('<div class="footer-title-section">', unsafe_allow_html=True)
+        st.markdown(f'<p class="footer-main-title">{title}</p>', unsafe_allow_html=True)
+        st.markdown(f'<p class="footer-subtitle">{description}</p>', unsafe_allow_html=True)
+        st.markdown(f'<p class="footer-author">{author}</p>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
         
-        # Description
-        st.markdown(f"<p class='footer-description'>{description}</p>", unsafe_allow_html=True)
-        
-        # Author
-        st.markdown(f"<p class='footer-author'>{author}</p>", unsafe_allow_html=True)
-        
-        # Social Links
+        # SOCIAL BUTTONS
         if social_links:
-            st.markdown("<div class='footer-buttons'>", unsafe_allow_html=True)
+            st.markdown('<div class="footer-buttons-wrapper">', unsafe_allow_html=True)
             
             for name, url in social_links.items():
                 if name == "LinkedIn":
@@ -458,30 +630,30 @@ class Footer:
                     css_class = "footer-button footer-button-email"
                 
                 st.markdown(
-                    f'<a href="{url}" target="_blank" class="{css_class}">{emoji} {name}</a>',
+                    f'<a href="{url}" target="_blank" class="{css_class}"><span>{emoji} {name}</span></a>',
                     unsafe_allow_html=True
                 )
             
-            st.markdown("</div>", unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
         
-        # Disclaimer
+        # DIVIDER
+        st.markdown('<div class="footer-divider"></div>', unsafe_allow_html=True)
+        
+        # DISCLAIMER
         if disclaimer:
-            st.markdown(
-                f'<div class="footer-disclaimer"><strong>⚠️ Disclaimer:</strong> {disclaimer}</div>',
-                unsafe_allow_html=True
-            )
+            st.markdown('<div class="footer-disclaimer-wrapper">', unsafe_allow_html=True)
+            st.markdown(f'<div class="footer-disclaimer"><div class="footer-disclaimer-title">⚠️ DISCLAIMER:</div>{disclaimer}</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
         
-        # Copyright
-        st.markdown(
-            '<p class="footer-copyright">© 2025 The Mountain Path - World of Finance | All Rights Reserved</p>',
-            unsafe_allow_html=True
-        )
-        st.markdown(
-            '<p class="footer-copyright"><em>Built with ❤️ using Streamlit, GARCH & EGARCH Models</em></p>',
-            unsafe_allow_html=True
-        )
+        # CREDIT SECTION
+        st.markdown('<div class="footer-credit-section">', unsafe_allow_html=True)
+        st.markdown('<p class="footer-copyright">© 2025 The Mountain Path - World of Finance | All Rights Reserved</p>', unsafe_allow_html=True)
+        st.markdown('<p class="footer-credit">Built with ❤️ using Streamlit, GARCH & EGARCH Models</p>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
         
-        st.markdown("</div>", unsafe_allow_html=True)
+        # CLOSE CONTAINERS
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # EXPANDER COMPONENT (ENHANCED)
