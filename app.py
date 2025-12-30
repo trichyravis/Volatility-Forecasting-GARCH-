@@ -144,13 +144,15 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Model selection
+    # Model selection with RED visible label using markdown
+    st.markdown("<span style='color: #DC3545; font-weight: 700; font-size: 14px;'>🔧 Select Models:</span>", unsafe_allow_html=True)
     models = st.multiselect(
-        "**Select Models:**",
+        "Models",
         options=["GARCH(1,1)", "EGARCH(1,1)", "Both"],
         default=["GARCH(1,1)"],
         help="Choose volatility models to compare",
-        key="model_selector"
+        key="model_selector",
+        label_visibility="collapsed"
     )
     
     st.markdown("---")
@@ -237,12 +239,13 @@ st.markdown("---")
 # TABS FOR DIFFERENT ANALYSIS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "📊 Price & Returns",
     "🔮 GARCH(1,1) Forecast",
     "⚡ EGARCH(1,1) Forecast",
     "📈 Model Comparison",
-    "📋 Statistics"
+    "📋 Statistics",
+    "📚 Learning & Theory"
 ])
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -742,6 +745,405 @@ with tab5:
         fig, ax = plt.subplots(figsize=(10, 4))
         plot_acf(returns**2, lags=40, ax=ax, title='ACF of Squared Returns')
         st.pyplot(fig)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TAB 6: LEARNING & THEORY
+# ═══════════════════════════════════════════════════════════════════════════════
+
+with tab6:
+    st.markdown("# 📚 Learning & Theory: GARCH & EGARCH Models")
+    
+    # Overview Section
+    st.markdown("---")
+    st.markdown("## 🎯 Overview")
+    st.info("""
+    This section explains the theoretical foundations of GARCH and EGARCH volatility models,
+    including their mathematical basis, assumptions, inputs, and practical interpretations.
+    """)
+    
+    # Create tabs for organized learning
+    learn_tab1, learn_tab2, learn_tab3, learn_tab4, learn_tab5 = st.tabs([
+        "📖 GARCH(1,1)",
+        "⚡ EGARCH(1,1)",
+        "🔬 Comparison",
+        "📊 Forecasting",
+        "💡 Interpretation"
+    ])
+    
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # GARCH EXPLANATION TAB
+    # ═══════════════════════════════════════════════════════════════════════════════
+    with learn_tab1:
+        st.markdown("## GARCH(1,1) Model - Generalized Autoregressive Conditional Heteroskedasticity")
+        
+        st.markdown("### 📐 Mathematical Formula")
+        st.latex(r"""
+        \sigma_t^2 = \omega + \alpha \epsilon_{t-1}^2 + \beta \sigma_{t-1}^2
+        """)
+        
+        st.markdown("### 🔑 Parameter Meanings")
+        
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.markdown("#### ω (Omega)")
+            st.write("""
+            **Constant term**
+            - Long-run average volatility
+            - Baseline volatility level
+            - Must be positive
+            """)
+        
+        with col2:
+            st.markdown("#### α (Alpha)")
+            st.write("""
+            **Shock coefficient**
+            - Measures immediate reaction to shocks
+            - Response to unexpected returns
+            - Range: 0 to 1
+            """)
+        
+        with col3:
+            st.markdown("#### β (Beta)")
+            st.write("""
+            **Persistence coefficient**
+            - Measures volatility persistence
+            - How quickly shocks fade
+            - Range: 0 to 1
+            """)
+        
+        st.markdown("### 💼 Model Inputs")
+        st.markdown("""
+        1. **Historical Returns:** Daily/weekly price changes
+        2. **Time Period:** Historical data for model training (e.g., 3 years)
+        3. **Forecast Horizon:** Future days to forecast volatility
+        """)
+        
+        st.markdown("### 📋 Key Assumptions")
+        st.markdown("""
+        1. **Symmetric Response:** Positive and negative shocks have equal impact
+        2. **Mean Reversion:** Volatility reverts to long-run average
+        3. **Conditional Normality:** Returns follow normal distribution
+        4. **Constant Parameters:** Model coefficients are stable over time
+        5. **Stationarity:** Time series properties don't change over time
+        """)
+        
+        st.markdown("### ✨ Advantages")
+        st.success("""
+        ✅ **Simplicity:** Easy to understand and implement
+        ✅ **Interpretability:** Clear meaning of each parameter
+        ✅ **Effectiveness:** Works well for many financial series
+        ✅ **Computational Efficiency:** Fast to estimate and forecast
+        ✅ **Stability:** Stable estimates for most datasets
+        ✅ **Symmetric:** Good for markets without leverage effects
+        """)
+        
+        st.markdown("### ⚠️ Limitations")
+        st.warning("""
+        ❌ **Symmetric Response:** Ignores leverage effect (negative shocks ≠ positive shocks)
+        ❌ **Parameter Constraints:** Both α and β must be <1 (restrictive)
+        ❌ **Slow Adaptation:** May not capture rapid volatility changes
+        ❌ **Mean Reversion:** Assumes volatility reverts to constant level
+        """)
+        
+        st.markdown("### 🎯 Best Use Cases")
+        st.markdown("""
+        - **Commodities:** Gold, oil, agricultural products
+        - **Symmetric Markets:** Markets without leverage effect
+        - **Stable Periods:** When leverage effect is minimal
+        - **Quick Forecasts:** When speed and simplicity are priorities
+        """)
+    
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # EGARCH EXPLANATION TAB
+    # ═══════════════════════════════════════════════════════════════════════════════
+    with learn_tab2:
+        st.markdown("## EGARCH(1,1) Model - Exponential GARCH")
+        
+        st.markdown("### 📐 Mathematical Formula")
+        st.latex(r"""
+        \log(\sigma_t^2) = \omega + \alpha \frac{\epsilon_{t-1}}{|\sigma_{t-1}|} + \gamma \frac{\epsilon_{t-1}}{\sigma_{t-1}} + \beta \log(\sigma_{t-1}^2)
+        """)
+        
+        st.markdown("### 🔑 Parameter Meanings")
+        
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.markdown("#### ω (Omega)")
+            st.write("""
+            **Intercept**
+            - Baseline log-volatility
+            - Can be negative
+            """)
+        
+        with col2:
+            st.markdown("#### α (Alpha)")
+            st.write("""
+            **Shock magnitude**
+            - Symmetric response component
+            - Size effect
+            """)
+        
+        with col3:
+            st.markdown("#### β (Beta)")
+            st.write("""
+            **Persistence**
+            - Volatility clustering
+            - Memory effect
+            """)
+        
+        with col4:
+            st.markdown("#### γ (Gamma)")
+            st.write("""
+            **Leverage effect**
+            - Asymmetric response
+            - Good news ≠ Bad news
+            """)
+        
+        st.markdown("### 💼 Model Inputs")
+        st.markdown("""
+        1. **Historical Returns:** Daily/weekly price changes
+        2. **Time Period:** Historical data for model training (e.g., 3 years)
+        3. **Forecast Horizon:** Future days to forecast volatility
+        """)
+        
+        st.markdown("### 📋 Key Assumptions")
+        st.markdown("""
+        1. **Asymmetric Response:** Negative shocks have larger impact (leverage effect)
+        2. **Log-Volatility Model:** Uses logarithm of variance (more stable)
+        3. **Mean Reversion:** Volatility reverts to long-run average
+        4. **Conditional Normality:** Returns follow normal distribution
+        5. **Stationarity:** Time series properties don't change over time
+        """)
+        
+        st.markdown("### ✨ Advantages")
+        st.success("""
+        ✅ **Leverage Effect:** Captures asymmetric response to shocks
+        ✅ **Log-Specification:** More stable, no negativity constraints
+        ✅ **Better Fit:** Often provides better fit than GARCH
+        ✅ **Realistic:** Reflects actual market behavior (bad news > good news)
+        ✅ **Flexibility:** No constraint that α+β<1
+        ✅ **Equity Markets:** Particularly good for stocks with leverage effects
+        """)
+        
+        st.markdown("### ⚠️ Limitations")
+        st.warning("""
+        ❌ **Complexity:** More parameters and more difficult to interpret
+        ❌ **Convergence:** Sometimes hard to estimate reliably
+        ❌ **Gamma N/A:** Not all datasets show leverage effects
+        ❌ **Computational Cost:** Slower to estimate and forecast
+        ❌ **Parameter Identification:** Gamma may not be identified in some data
+        """)
+        
+        st.markdown("### 🎯 Best Use Cases")
+        st.markdown("""
+        - **Equity Markets:** Stocks where bad news > good news effect
+        - **High Volatility Assets:** Where leverage effect is pronounced
+        - **Risk Management:** More accurate tail risk estimation
+        - **Option Pricing:** Better for modeling implied volatility
+        """)
+    
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # COMPARISON TAB
+    # ═══════════════════════════════════════════════════════════════════════════════
+    with learn_tab3:
+        st.markdown("## GARCH vs EGARCH: Side-by-Side Comparison")
+        
+        comparison_df = pd.DataFrame({
+            'Feature': [
+                'Response to Shocks',
+                'Leverage Effect',
+                'Parameters',
+                'Complexity',
+                'Estimation Speed',
+                'Positivity Constraint',
+                'Log-Specification',
+                'Best For',
+                'Convergence',
+                'Gamma Parameter'
+            ],
+            'GARCH(1,1)': [
+                'Symmetric',
+                'No',
+                '3 (ω, α, β)',
+                'Simple',
+                'Fast',
+                'Yes (α+β<1)',
+                'No',
+                'Commodities, stable markets',
+                'Easy',
+                'N/A'
+            ],
+            'EGARCH(1,1)': [
+                'Asymmetric',
+                'Yes (γ parameter)',
+                '4 (ω, α, β, γ)',
+                'Complex',
+                'Slower',
+                'No',
+                'Yes',
+                'Equities, risk management',
+                'Sometimes difficult',
+                'Captures asymmetry'
+            ]
+        })
+        
+        st.dataframe(comparison_df, use_container_width=True)
+        
+        st.markdown("### 📊 Model Selection Recommendation")
+        
+        col_g, col_e = st.columns(2)
+        
+        with col_g:
+            st.success("""
+            ### Choose GARCH When:
+            - ✅ Simplicity and speed matter
+            - ✅ No leverage effect visible
+            - ✅ Commodities or symmetric markets
+            - ✅ Quick preliminary analysis needed
+            - ✅ Stable convergence required
+            """)
+        
+        with col_e:
+            st.info("""
+            ### Choose EGARCH When:
+            - ⚡ Leverage effect is present
+            - ⚡ Better fit is more important
+            - ⚡ Equity/stock markets
+            - ⚡ Risk management focus
+            - ⚡ Can tolerate estimation complexity
+            """)
+    
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # FORECASTING TAB
+    # ═══════════════════════════════════════════════════════════════════════════════
+    with learn_tab4:
+        st.markdown("## 🔮 Volatility Forecasting Process")
+        
+        st.markdown("### Step-by-Step Process")
+        
+        steps_data = {
+            'Step': ['1️⃣ Data Preparation', '2️⃣ Model Estimation', '3️⃣ Diagnostic Checks', 
+                     '4️⃣ Forecast Generation', '5️⃣ Interpretation'],
+            'Description': [
+                'Clean historical data, calculate returns',
+                'Estimate ω, α, β (and γ for EGARCH) parameters',
+                'Check model fit (AIC, BIC), residual diagnostics',
+                'Project conditional volatility into future',
+                'Analyze forecasts, assess confidence'
+            ]
+        }
+        
+        st.write(pd.DataFrame(steps_data))
+        
+        st.markdown("### 📈 Forecast Methodology")
+        st.markdown("""
+        **One-Step Ahead Forecasting:**
+        - Use last observed returns and volatility
+        - Generate forecast for next period
+        - Update with new information
+        
+        **Multi-Step Forecasting:**
+        - Use forecasted conditional volatility
+        - Volatility tends toward long-run average
+        - Uncertainty increases with forecast horizon
+        """)
+        
+        st.markdown("### 🎯 Model Fit Statistics")
+        st.markdown("""
+        **AIC (Akaike Information Criterion):**
+        - Lower is better
+        - Penalizes model complexity
+        - Use for model comparison
+        
+        **BIC (Bayesian Information Criterion):**
+        - Lower is better
+        - Stronger penalty for complexity
+        - Preferred for model selection
+        
+        **Log-Likelihood:**
+        - Higher is better
+        - Goodness of fit measure
+        - Basis for information criteria
+        """)
+    
+    # ═══════════════════════════════════════════════════════════════════════════════
+    # INTERPRETATION TAB
+    # ═══════════════════════════════════════════════════════════════════════════════
+    with learn_tab5:
+        st.markdown("## 💡 Interpretation & Practical Use")
+        
+        st.markdown("### Understanding the Parameters")
+        
+        st.markdown("""
+        #### ω (Omega) Interpretation
+        - **Meaning:** Long-run average volatility level
+        - **High ω:** Markets are naturally volatile
+        - **Low ω:** Markets are stable
+        - **Example:** ω=0.05 means 5% baseline daily volatility
+        
+        #### α (Alpha) Interpretation
+        - **High α (0.1-0.3):** Quick response to shocks
+        - **Low α (0.01-0.05):** Slow response to shocks
+        - **Example:** α=0.15 means 15% of yesterday's shock enters today's volatility
+        
+        #### β (Beta) Interpretation
+        - **High β (0.8-0.95):** Volatility is persistent
+        - **Low β (0.3-0.6):** Volatility quickly reverts to mean
+        - **Example:** β=0.85 means 85% of yesterday's volatility stays today
+        
+        #### γ (Gamma) EGARCH Interpretation
+        - **Positive γ:** Negative shocks increase volatility more
+        - **Magnitude of γ:** Strength of leverage effect
+        - **Example:** γ=0.15 means asymmetry is moderate
+        - **Note:** Often N/A for some datasets (means no leverage effect)
+        """)
+        
+        st.markdown("### Reading Forecast Results")
+        
+        st.markdown("""
+        **Volatility Forecast Values:**
+        - **Higher volatility forecast:** Market expects higher uncertainty
+        - **Lower volatility forecast:** Market expects stability
+        - **Increasing trend:** Shocks are accumulating
+        - **Decreasing trend:** Volatility reverting to mean
+        
+        **Using Forecasts:**
+        1. **Risk Management:** Set wider stop-losses for high volatility
+        2. **Options Trading:** Higher volatility → higher option premiums
+        3. **Portfolio Allocation:** Adjust asset weights based on volatility
+        4. **Hedging:** More hedging needed in high volatility periods
+        """)
+        
+        st.markdown("### Practical Guidance")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("#### For Traders")
+            st.markdown("""
+            - **Rising volatility:** Consider reducing position sizes
+            - **Falling volatility:** May signal reversal opportunity
+            - **Forecast accuracy:** Improves near-term (1-5 days)
+            - **Confidence:** Declines for longer horizons
+            """)
+        
+        with col2:
+            st.markdown("#### For Risk Managers")
+            st.markdown("""
+            - **VaR Calculation:** Use model-based volatility
+            - **Margin Requirements:** Adjust based on forecasts
+            - **Stress Testing:** Scenario analysis with high volatility
+            - **Monitoring:** Watch α for shock sensitivity
+            """)
+        
+        st.markdown("### ⚠️ Important Reminders")
+        st.warning("""
+        - **Past volatility ≠ Future volatility:** Use forecasts cautiously
+        - **Model assumptions may not hold:** Test regularly
+        - **Structural breaks:** Models struggle with regime changes
+        - **Tail events:** Models underestimate extreme moves
+        - **Combine with analysis:** Don't rely solely on quantitative models
+        """)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # FOOTER
