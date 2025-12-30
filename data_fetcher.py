@@ -1,3 +1,4 @@
+
 """
 ═══════════════════════════════════════════════════════════════════════════════
 DATA FETCHER - VOLATILITY FORECASTING APP
@@ -58,7 +59,8 @@ class DataFetcher:
     def fetch_stock_data(
         symbol: str,
         period: str = "3y",
-        interval: str = "1d"
+        interval: str = "1d",
+        retries: int = 3
     ) -> Optional[pd.DataFrame]:
         """
         Fetch stock/index/commodity data from Yahoo Finance
@@ -67,33 +69,47 @@ class DataFetcher:
             symbol: Yahoo Finance symbol
             period: Time period (e.g., "1y", "3y", "10y")
             interval: Data interval (default: "1d" for daily)
+            retries: Number of retry attempts
         
         Returns:
             DataFrame with OHLCV data or None if error
         """
-        try:
-            print(f"📊 Fetching data for {symbol}...")
+        last_error = None
+        
+        for attempt in range(retries):
+            try:
+                print(f"📊 Fetching data for {symbol} (Attempt {attempt + 1}/{retries})...")
+                
+                ticker = yf.Ticker(symbol)
+                data = ticker.history(period=period, interval=interval)
+                
+                if data is None or len(data) == 0:
+                    last_error = f"No data retrieved for {symbol}"
+                    print(f"⚠️ {last_error}, retrying...")
+                    time.sleep(1)
+                    continue
+                
+                # Remove rows with NaN
+                data = data.dropna()
+                
+                if len(data) < 50:
+                    last_error = f"Only {len(data)} trading days available (< 50 minimum)"
+                    print(f"⚠️ {last_error}, retrying...")
+                    time.sleep(1)
+                    continue
+                
+                print(f"✅ Successfully fetched {len(data)} trading days for {symbol}")
+                return data
             
-            ticker = yf.Ticker(symbol)
-            data = ticker.history(period=period, interval=interval)
-            
-            if data is None or len(data) == 0:
-                print(f"❌ No data retrieved for {symbol}")
-                return None
-            
-            # Remove rows with NaN
-            data = data.dropna()
-            
-            if len(data) < 100:
-                print(f"⚠️ Warning: Only {len(data)} trading days available")
-                return None
-            
-            print(f"✅ Fetched {len(data)} trading days for {symbol}")
-            return data
-            
-        except Exception as e:
-            print(f"❌ Error fetching {symbol}: {str(e)}")
-            return None
+            except Exception as e:
+                last_error = str(e)
+                print(f"❌ Attempt {attempt + 1} failed: {last_error}")
+                if attempt < retries - 1:
+                    time.sleep(1)  # Wait before retry
+                continue
+        
+        print(f"❌ Failed to fetch {symbol} after {retries} attempts: {last_error}")
+        return None
     
     @staticmethod
     def fetch_multiple_assets(
