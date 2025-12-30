@@ -111,6 +111,7 @@ class VolatilityModels:
             
             # Print all available parameters for debugging
             print(f"Available parameters: {list(params.index)}")
+            print(f"Parameter values:\n{params}")
             
             # Get Omega - try all possible names
             omega = None
@@ -119,6 +120,7 @@ class VolatilityModels:
                 if key in params:
                     omega = float(params[key])
                     omega_se = float(std_err[key])
+                    print(f"Found Omega as: {key}")
                     break
             
             # If still not found, check if it's the first parameter
@@ -126,36 +128,53 @@ class VolatilityModels:
                 try:
                     omega = float(params.iloc[0])
                     omega_se = float(std_err.iloc[0])
+                    print(f"Found Omega as first parameter: {params.index[0]}")
                 except:
                     omega = None
                     omega_se = None
             
-            # Get Alpha
+            # Get Alpha - try all variations
             alpha = None
             alpha_se = None
             for key in params.index:
-                if 'alpha' in key.lower():
+                key_str = str(key).lower()
+                if 'alpha' in key_str:
                     alpha = float(params[key])
                     alpha_se = float(std_err[key])
+                    print(f"Found Alpha as: {key}")
                     break
             
-            # Get Beta
+            # Get Beta - try all variations
             beta = None
             beta_se = None
             for key in params.index:
-                if 'beta' in key.lower():
+                key_str = str(key).lower()
+                if 'beta' in key_str:
                     beta = float(params[key])
                     beta_se = float(std_err[key])
+                    print(f"Found Beta as: {key}")
                     break
             
-            # Get Gamma (EGARCH only)
+            # Get Gamma - try all variations
             gamma = None
             gamma_se = None
+            gamma_found = False
+            
             for key in params.index:
-                if 'gamma' in key.lower():
-                    gamma = float(params[key])
-                    gamma_se = float(std_err[key])
-                    break
+                key_str = str(key).lower()
+                # Try multiple gamma names
+                if any(g in key_str for g in ['gamma', 'leverage', 'asymmetry', 'skewness']):
+                    try:
+                        gamma = float(params[key])
+                        gamma_se = float(std_err[key])
+                        print(f"Found Gamma as: {key}")
+                        gamma_found = True
+                        break
+                    except:
+                        continue
+            
+            if not gamma_found:
+                print("Gamma parameter not found in results")
             
             return {
                 "omega": omega,
