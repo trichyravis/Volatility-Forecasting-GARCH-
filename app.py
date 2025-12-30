@@ -312,126 +312,125 @@ with tab2:
                     st.metric("BIC", f"{garch_results.bic:.2f}")
                 with col3:
                     st.metric("Log-Likelihood", f"{garch_results.loglikelihood:.2f}")
-            
-            # Model parameters - SAFE EXTRACTION WITH BETTER LOGIC
-            st.markdown("**Model Parameters:**")
-            try:
-                params = garch_results.params
-                std_err = garch_results.std_err
                 
-                print(f"DEBUG - Available GARCH params: {list(params.index)}")
+                # Model parameters - SAFE EXTRACTION WITH BETTER LOGIC
+                st.markdown("**Model Parameters:**")
+                try:
+                    params = garch_results.params
+                    std_err = garch_results.std_err
+                    
+                    print(f"DEBUG - Available GARCH params: {list(params.index)}")
+                    
+                    # Get Omega - try multiple names and first position
+                    omega = None
+                    omega_se = None
+                    for key in ['Constant', 'const', 'mu']:
+                        if key in params:
+                            omega = float(params[key])
+                            omega_se = float(std_err[key])
+                            break
+                    
+                    if omega is None and len(params) > 0:
+                        try:
+                            omega = float(params.iloc[0])
+                            omega_se = float(std_err.iloc[0])
+                        except:
+                            pass
+                    
+                    # Get Alpha
+                    alpha = None
+                    alpha_se = None
+                    for key in params.index:
+                        if 'alpha' in str(key).lower():
+                            alpha = float(params[key])
+                            alpha_se = float(std_err[key])
+                            break
+                    
+                    # Get Beta
+                    beta = None
+                    beta_se = None
+                    for key in params.index:
+                        if 'beta' in str(key).lower():
+                            beta = float(params[key])
+                            beta_se = float(std_err[key])
+                            break
+                    
+                    # Format values for display
+                    def format_param(val):
+                        if val is None or pd.isna(val):
+                            return "N/A"
+                        return f"{float(val):.6f}"
+                    
+                    params_garch = pd.DataFrame({
+                        'Parameter': ['ω (Omega)', 'α (Alpha)', 'β (Beta)'],
+                        'Coefficient': [format_param(omega), format_param(alpha), format_param(beta)],
+                        'Std Error': [format_param(omega_se), format_param(alpha_se), format_param(beta_se)]
+                    })
+                    st.dataframe(params_garch, use_container_width=True)
+                except Exception as param_error:
+                    st.info(f"⚠️ Parameter extraction issue: {str(param_error)}")
+                    print(f"Parameter extraction error: {param_error}")
                 
-                # Get Omega - try multiple names and first position
-                omega = None
-                omega_se = None
-                for key in ['Constant', 'const', 'mu']:
-                    if key in params:
-                        omega = float(params[key])
-                        omega_se = float(std_err[key])
-                        break
+                # Forecast visualization
+                st.markdown("**Volatility Forecast:**")
                 
-                if omega is None and len(params) > 0:
-                    try:
-                        omega = float(params.iloc[0])
-                        omega_se = float(std_err.iloc[0])
-                    except:
-                        pass
+                forecast_index = pd.date_range(
+                    start=data.index[-1],
+                    periods=forecast_days + 1,
+                    freq='D'
+                )[1:]
                 
-                # Get Alpha
-                alpha = None
-                alpha_se = None
-                for key in params.index:
-                    if 'alpha' in str(key).lower():
-                        alpha = float(params[key])
-                        alpha_se = float(std_err[key])
-                        break
+                fig_garch = go.Figure()
                 
-                # Get Beta
-                beta = None
-                beta_se = None
-                for key in params.index:
-                    if 'beta' in str(key).lower():
-                        beta = float(params[key])
-                        beta_se = float(std_err[key])
-                        break
+                # Historical volatility
+                historical_vol = returns.rolling(20).std()
+                fig_garch.add_trace(go.Scatter(
+                    x=historical_vol.index,
+                    y=historical_vol,
+                    mode='lines',
+                    name='Historical Volatility (20-day)',
+                    line=dict(color=COLORS['primary_dark'], width=2)
+                ))
                 
-                # Format values for display
-                def format_param(val):
-                    if val is None or pd.isna(val):
-                        return "N/A"
-                    return f"{float(val):.6f}"
+                # Conditional volatility
+                fig_garch.add_trace(go.Scatter(
+                    x=data.index,
+                    y=np.sqrt(garch_results.conditional_volatility) * np.sqrt(252),
+                    mode='lines',
+                    name='GARCH(1,1) Conditional Vol',
+                    line=dict(color=COLORS['primary_light'], width=2)
+                ))
                 
-                params_garch = pd.DataFrame({
-                    'Parameter': ['ω (Omega)', 'α (Alpha)', 'β (Beta)'],
-                    'Coefficient': [format_param(omega), format_param(alpha), format_param(beta)],
-                    'Std Error': [format_param(omega_se), format_param(alpha_se), format_param(beta_se)]
+                # Forecast
+                fig_garch.add_trace(go.Scatter(
+                    x=forecast_index,
+                    y=garch_forecast * np.sqrt(252),
+                    mode='lines+markers',
+                    name='GARCH(1,1) Forecast',
+                    line=dict(color=COLORS['accent_gold'], width=3, dash='dash'),
+                    marker=dict(size=8)
+                ))
+                
+                fig_garch.update_layout(
+                    title=f"{selected_asset} - GARCH(1,1) Volatility Forecast",
+                    xaxis_title="Date",
+                    yaxis_title="Annualized Volatility (%)",
+                    hovermode='x unified',
+                    height=500,
+                    template='plotly_white'
+                )
+                st.plotly_chart(fig_garch, use_container_width=True)
+                
+                # Forecast table
+                st.markdown("**Forecast Values (Next 20 days):**")
+                forecast_df = pd.DataFrame({
+                    'Date': forecast_index[:20],
+                    'Forecasted Volatility (%)': (garch_forecast[:20] * np.sqrt(252)).round(4),
+                    'Confidence Level': '68%'
                 })
-                st.dataframe(params_garch, use_container_width=True)
-            except Exception as param_error:
-                st.info(f"⚠️ Parameter extraction issue: {str(param_error)}")
-                print(f"Parameter extraction error: {param_error}")
-            
-            # Forecast visualization
-            st.markdown("**Volatility Forecast:**")
-            
-            forecast_index = pd.date_range(
-                start=data.index[-1],
-                periods=forecast_days + 1,
-                freq='D'
-            )[1:]
-            
-            fig_garch = go.Figure()
-            
-            # Historical volatility
-            historical_vol = returns.rolling(20).std()
-            fig_garch.add_trace(go.Scatter(
-                x=historical_vol.index,
-                y=historical_vol,
-                mode='lines',
-                name='Historical Volatility (20-day)',
-                line=dict(color=COLORS['primary_dark'], width=2)
-            ))
-            
-            # Conditional volatility
-            fig_garch.add_trace(go.Scatter(
-                x=data.index,
-                y=np.sqrt(garch_results.conditional_volatility) * np.sqrt(252),
-                mode='lines',
-                name='GARCH(1,1) Conditional Vol',
-                line=dict(color=COLORS['primary_light'], width=2)
-            ))
-            
-            # Forecast
-            fig_garch.add_trace(go.Scatter(
-                x=forecast_index,
-                y=garch_forecast * np.sqrt(252),
-                mode='lines+markers',
-                name='GARCH(1,1) Forecast',
-                line=dict(color=COLORS['accent_gold'], width=3, dash='dash'),
-                marker=dict(size=8)
-            ))
-            
-            fig_garch.update_layout(
-                title=f"{selected_asset} - GARCH(1,1) Volatility Forecast",
-                xaxis_title="Date",
-                yaxis_title="Annualized Volatility (%)",
-                hovermode='x unified',
-                height=500,
-                template='plotly_white'
-            )
-            st.plotly_chart(fig_garch, use_container_width=True)
-            
-            # Forecast table
-            st.markdown("**Forecast Values (Next 20 days):**")
-            forecast_df = pd.DataFrame({
-                'Date': forecast_index[:20],
-                'Forecasted Volatility (%)': (garch_forecast[:20] * np.sqrt(252)).round(4),
-                'Confidence Level': '68%'
-            })
-            st.dataframe(forecast_df, use_container_width=True)
-            
-        except Exception as e:
-            st.error(f"❌ Error fitting GARCH model: {str(e)}")
+                st.dataframe(forecast_df, use_container_width=True)
+            except Exception as e:
+                st.error(f"❌ Error fitting GARCH model: {str(e)}")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # TAB 3: EGARCH(1,1) FORECAST
@@ -445,161 +444,160 @@ with tab3:
         st.markdown("#### ⚡ EGARCH(1,1) Model Analysis & Forecast")
         
         with st.spinner("⏳ Fitting EGARCH(1,1) model..."):
-        try:
-            egarch_results, egarch_forecast = VolatilityModels.fit_egarch(
-                returns,
-                forecast_periods=forecast_days
-            )
-            
-            col1, col2, col3 = st.columns(3)
-            
-            with col1:
-                st.metric("AIC", f"{egarch_results.aic:.2f}")
-            with col2:
-                st.metric("BIC", f"{egarch_results.bic:.2f}")
-            with col3:
-                st.metric("Log-Likelihood", f"{egarch_results.loglikelihood:.2f}")
-            
-            # Model parameters - SAFE EXTRACTION WITH BETTER LOGIC
-            st.markdown("**Model Parameters:**")
             try:
-                params = egarch_results.params
-                std_err = egarch_results.std_err
+                egarch_results, egarch_forecast = VolatilityModels.fit_egarch(
+                    returns,
+                    forecast_periods=forecast_days
+                )
                 
-                print(f"DEBUG - Available EGARCH params: {list(params.index)}")
+                col1, col2, col3 = st.columns(3)
                 
-                # Get Omega - try multiple names and first position
-                omega = None
-                omega_se = None
-                for key in ['Constant', 'const', 'mu']:
-                    if key in params:
-                        omega = float(params[key])
-                        omega_se = float(std_err[key])
-                        break
+                with col1:
+                    st.metric("AIC", f"{egarch_results.aic:.2f}")
+                with col2:
+                    st.metric("BIC", f"{egarch_results.bic:.2f}")
+                with col3:
+                    st.metric("Log-Likelihood", f"{egarch_results.loglikelihood:.2f}")
                 
-                if omega is None and len(params) > 0:
-                    try:
-                        omega = float(params.iloc[0])
-                        omega_se = float(std_err.iloc[0])
-                    except:
-                        pass
-                
-                # Get Alpha
-                alpha = None
-                alpha_se = None
-                for key in params.index:
-                    if 'alpha' in str(key).lower():
-                        alpha = float(params[key])
-                        alpha_se = float(std_err[key])
-                        break
-                
-                # Get Beta
-                beta = None
-                beta_se = None
-                for key in params.index:
-                    if 'beta' in str(key).lower():
-                        beta = float(params[key])
-                        beta_se = float(std_err[key])
-                        break
-                
-                # Get Gamma - try multiple variations
-                gamma = None
-                gamma_se = None
-                for key in params.index:
-                    key_lower = str(key).lower()
-                    # Try multiple possible gamma names
-                    if any(g in key_lower for g in ['gamma', 'leverage', 'asymmetry']):
-                        try:
-                            gamma = float(params[key])
-                            gamma_se = float(std_err[key])
-                            print(f"Found Gamma as: {key}")
+                # Model parameters - SAFE EXTRACTION WITH BETTER LOGIC
+                st.markdown("**Model Parameters:**")
+                try:
+                    params = egarch_results.params
+                    std_err = egarch_results.std_err
+                    
+                    print(f"DEBUG - Available EGARCH params: {list(params.index)}")
+                    
+                    # Get Omega - try multiple names and first position
+                    omega = None
+                    omega_se = None
+                    for key in ['Constant', 'const', 'mu']:
+                        if key in params:
+                            omega = float(params[key])
+                            omega_se = float(std_err[key])
                             break
+                    
+                    if omega is None and len(params) > 0:
+                        try:
+                            omega = float(params.iloc[0])
+                            omega_se = float(std_err.iloc[0])
                         except:
-                            continue
+                            pass
+                    
+                    # Get Alpha
+                    alpha = None
+                    alpha_se = None
+                    for key in params.index:
+                        if 'alpha' in str(key).lower():
+                            alpha = float(params[key])
+                            alpha_se = float(std_err[key])
+                            break
+                    
+                    # Get Beta
+                    beta = None
+                    beta_se = None
+                    for key in params.index:
+                        if 'beta' in str(key).lower():
+                            beta = float(params[key])
+                            beta_se = float(std_err[key])
+                            break
+                    
+                    # Get Gamma - try multiple variations
+                    gamma = None
+                    gamma_se = None
+                    for key in params.index:
+                        key_lower = str(key).lower()
+                        # Try multiple possible gamma names
+                        if any(g in key_lower for g in ['gamma', 'leverage', 'asymmetry']):
+                            try:
+                                gamma = float(params[key])
+                                gamma_se = float(std_err[key])
+                                print(f"Found Gamma as: {key}")
+                                break
+                            except:
+                                continue
+                    
+                    # Format values for display
+                    def format_param(val):
+                        if val is None or pd.isna(val):
+                            return "N/A"
+                        return f"{float(val):.6f}"
+                    
+                    params_egarch = pd.DataFrame({
+                        'Parameter': ['ω (Omega)', 'α (Alpha)', 'β (Beta)', 'γ (Gamma)'],
+                        'Coefficient': [format_param(omega), format_param(alpha), format_param(beta), format_param(gamma)],
+                        'Std Error': [format_param(omega_se), format_param(alpha_se), format_param(beta_se), format_param(gamma_se)]
+                    })
+                    st.dataframe(params_egarch, use_container_width=True)
+                    
+                    # Show different note based on whether Gamma was estimated
+                    if gamma is None:
+                        st.info("💡 **Note:** γ (Gamma) parameter not estimated. This can occur with certain model specifications or data characteristics. The asymmetry/leverage effect may be constrained or not identified in this dataset.")
+                    else:
+                        st.info("💡 **Note:** γ (Gamma) parameter captures asymmetric effects (leverage effect) - negative shocks have larger impact on volatility than positive shocks")
+                except Exception as param_error:
+                    st.info(f"⚠️ Parameter extraction issue: {str(param_error)}")
+                    print(f"EGARCH param error: {param_error}")
                 
-                # Format values for display
-                def format_param(val):
-                    if val is None or pd.isna(val):
-                        return "N/A"
-                    return f"{float(val):.6f}"
+                # Forecast visualization
+                st.markdown("**Volatility Forecast:**")
                 
-                params_egarch = pd.DataFrame({
-                    'Parameter': ['ω (Omega)', 'α (Alpha)', 'β (Beta)', 'γ (Gamma)'],
-                    'Coefficient': [format_param(omega), format_param(alpha), format_param(beta), format_param(gamma)],
-                    'Std Error': [format_param(omega_se), format_param(alpha_se), format_param(beta_se), format_param(gamma_se)]
+                forecast_index = pd.date_range(
+                    start=data.index[-1],
+                    periods=forecast_days + 1,
+                    freq='D'
+                )[1:]
+                
+                fig_egarch = go.Figure()
+                
+                # Historical volatility
+                historical_vol = returns.rolling(20).std()
+                fig_egarch.add_trace(go.Scatter(
+                    x=historical_vol.index,
+                    y=historical_vol,
+                    mode='lines',
+                    name='Historical Volatility (20-day)',
+                    line=dict(color=COLORS['primary_dark'], width=2)
+                ))
+                
+                # Conditional volatility
+                fig_egarch.add_trace(go.Scatter(
+                    x=data.index,
+                    y=np.sqrt(egarch_results.conditional_volatility) * np.sqrt(252),
+                    mode='lines',
+                    name='EGARCH(1,1) Conditional Vol',
+                    line=dict(color=COLORS['primary_light'], width=2)
+                ))
+                
+                # Forecast
+                fig_egarch.add_trace(go.Scatter(
+                    x=forecast_index,
+                    y=egarch_forecast * np.sqrt(252),
+                    mode='lines+markers',
+                    name='EGARCH(1,1) Forecast',
+                    line=dict(color=COLORS['accent_gold'], width=3, dash='dash'),
+                    marker=dict(size=8)
+                ))
+                
+                fig_egarch.update_layout(
+                    title=f"{selected_asset} - EGARCH(1,1) Volatility Forecast",
+                    xaxis_title="Date",
+                    yaxis_title="Annualized Volatility (%)",
+                    hovermode='x unified',
+                    height=500,
+                    template='plotly_white'
+                )
+                st.plotly_chart(fig_egarch, use_container_width=True)
+                
+                # Forecast table
+                st.markdown("**Forecast Values (Next 20 days):**")
+                forecast_df = pd.DataFrame({
+                    'Date': forecast_index[:20],
+                    'Forecasted Volatility (%)': (egarch_forecast[:20] * np.sqrt(252)).round(4),
+                    'Confidence Level': '68%'
                 })
-                st.dataframe(params_egarch, use_container_width=True)
-                
-                # Show different note based on whether Gamma was estimated
-                if gamma is None:
-                    st.info("💡 **Note:** γ (Gamma) parameter not estimated. This can occur with certain model specifications or data characteristics. The asymmetry/leverage effect may be constrained or not identified in this dataset.")
-                else:
-                    st.info("💡 **Note:** γ (Gamma) parameter captures asymmetric effects (leverage effect) - negative shocks have larger impact on volatility than positive shocks")
-            except Exception as param_error:
-                st.info(f"⚠️ Parameter extraction issue: {str(param_error)}")
-                print(f"EGARCH param error: {param_error}")
-            
-            # Forecast visualization
-            st.markdown("**Volatility Forecast:**")
-            
-            forecast_index = pd.date_range(
-                start=data.index[-1],
-                periods=forecast_days + 1,
-                freq='D'
-            )[1:]
-            
-            fig_egarch = go.Figure()
-            
-            # Historical volatility
-            historical_vol = returns.rolling(20).std()
-            fig_egarch.add_trace(go.Scatter(
-                x=historical_vol.index,
-                y=historical_vol,
-                mode='lines',
-                name='Historical Volatility (20-day)',
-                line=dict(color=COLORS['primary_dark'], width=2)
-            ))
-            
-            # Conditional volatility
-            fig_egarch.add_trace(go.Scatter(
-                x=data.index,
-                y=np.sqrt(egarch_results.conditional_volatility) * np.sqrt(252),
-                mode='lines',
-                name='EGARCH(1,1) Conditional Vol',
-                line=dict(color=COLORS['primary_light'], width=2)
-            ))
-            
-            # Forecast
-            fig_egarch.add_trace(go.Scatter(
-                x=forecast_index,
-                y=egarch_forecast * np.sqrt(252),
-                mode='lines+markers',
-                name='EGARCH(1,1) Forecast',
-                line=dict(color=COLORS['accent_gold'], width=3, dash='dash'),
-                marker=dict(size=8)
-            ))
-            
-            fig_egarch.update_layout(
-                title=f"{selected_asset} - EGARCH(1,1) Volatility Forecast",
-                xaxis_title="Date",
-                yaxis_title="Annualized Volatility (%)",
-                hovermode='x unified',
-                height=500,
-                template='plotly_white'
-            )
-            st.plotly_chart(fig_egarch, use_container_width=True)
-            
-            # Forecast table
-            st.markdown("**Forecast Values (Next 20 days):**")
-            forecast_df = pd.DataFrame({
-                'Date': forecast_index[:20],
-                'Forecasted Volatility (%)': (egarch_forecast[:20] * np.sqrt(252)).round(4),
-                'Confidence Level': '68%'
-            })
-            st.dataframe(forecast_df, use_container_width=True)
-            
-        except Exception as e:
-            st.error(f"❌ Error fitting EGARCH model: {str(e)}")
+                st.dataframe(forecast_df, use_container_width=True)
+            except Exception as e:
+                st.error(f"❌ Error fitting EGARCH model: {str(e)}")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # TAB 4: MODEL COMPARISON
