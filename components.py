@@ -339,20 +339,20 @@ class Footer:
     ):
         """Render simple, clean, centered footer"""
         
-        # Simple CSS - centered layout
+        # Simple CSS - centered layout, MINIMAL SPACING
         st.markdown("""
         <style>
         .footer-simple {
             text-align: center;
-            padding: 2rem 1rem;
-            margin-top: 3rem;
+            padding: 0.8rem 1rem;
+            margin-top: 1rem;
         }
         
         .footer-title {
             color: #003366;
             font-size: 22px;
             font-weight: 700;
-            margin: 0 0 0.3rem 0;
+            margin: 0 0 0.2rem 0;
             letter-spacing: 0.5px;
         }
         
@@ -360,29 +360,30 @@ class Footer:
             color: #0077b5;
             font-size: 14px;
             font-weight: 500;
-            margin: 0.3rem 0 0 0;
+            margin: 0.2rem 0 0 0;
         }
         
         .footer-author {
             color: #666;
             font-size: 13px;
-            margin: 0.8rem 0 1.5rem 0;
+            margin: 0.5rem 0 0.8rem 0;
         }
         
         .footer-buttons {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
-            gap: 0.7rem;
-            margin: 1.5rem 0;
+            justify-content: center;
+            gap: 1rem;
+            margin: 0.8rem 0;
         }
         
         .footer-btn {
             display: inline-block;
             padding: 0.6rem 1.5rem;
             border-radius: 6px;
-            color: white;
-            text-decoration: none;
+            color: white !important;
+            text-decoration: none !important;
             font-weight: 600;
             font-size: 14px;
             transition: all 0.2s;
@@ -401,6 +402,7 @@ class Footer:
         
         .btn-linkedin:hover {
             background: #005a87;
+            color: white !important;
         }
         
         .btn-github {
@@ -409,31 +411,32 @@ class Footer:
         
         .btn-github:hover {
             background: #1a1a1a;
+            color: white !important;
         }
         
         .footer-disclaimer {
             color: #333;
             font-size: 12px;
-            margin: 1.5rem 0;
+            margin: 0.8rem 0;
             line-height: 1.5;
         }
         
         .footer-divider {
             height: 1px;
             background: #e0e0e0;
-            margin: 1.5rem 0;
+            margin: 0.8rem 0;
         }
         
         .footer-copyright {
             color: #999;
             font-size: 12px;
-            margin: 1rem 0 0.3rem 0;
+            margin: 0.5rem 0 0.2rem 0;
         }
         
         .footer-credit {
             color: #aaa;
             font-size: 12px;
-            margin: 0.3rem 0;
+            margin: 0.2rem 0;
             font-style: italic;
         }
         </style>
