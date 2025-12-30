@@ -333,10 +333,16 @@ with tab2:
                 beta = params.get('beta[1]', np.nan)
                 beta_se = std_err.get('beta[1]', np.nan)
                 
+                # Format values for display
+                def format_param(val):
+                    if pd.isna(val) or val is None:
+                        return "N/A"
+                    return f"{float(val):.6f}"
+                
                 params_garch = pd.DataFrame({
                     'Parameter': ['ω (Omega)', 'α (Alpha)', 'β (Beta)'],
-                    'Coefficient': [const, alpha, beta],
-                    'Std Error': [const_se, alpha_se, beta_se]
+                    'Coefficient': [format_param(const), format_param(alpha), format_param(beta)],
+                    'Std Error': [format_param(const_se), format_param(alpha_se), format_param(beta_se)]
                 })
                 st.dataframe(params_garch, use_container_width=True)
             except Exception as param_error:
@@ -428,24 +434,46 @@ with tab3:
             with col3:
                 st.metric("Log-Likelihood", f"{egarch_results.loglikelihood:.2f}")
             
-            # Model parameters
+            # Model parameters - SAFE EXTRACTION
             st.markdown("**Model Parameters:**")
-            params_egarch = pd.DataFrame({
-                'Parameter': ['ω (Omega)', 'α (Alpha)', 'β (Beta)', 'γ (Gamma)'],
-                'Coefficient': [
-                    egarch_results.params['Constant'],
-                    egarch_results.params['alpha[1]'],
-                    egarch_results.params['beta[1]'],
-                    egarch_results.params['gamma[1]']
-                ],
-                'Std Error': [
-                    egarch_results.std_err['Constant'],
-                    egarch_results.std_err['alpha[1]'],
-                    egarch_results.std_err['beta[1]'],
-                    egarch_results.std_err['gamma[1]']
-                ]
-            })
-            st.dataframe(params_egarch, use_container_width=True)
+            try:
+                params = egarch_results.params
+                std_err = egarch_results.std_err
+                
+                # Try multiple names for constants
+                if 'Constant' in params:
+                    const = params['Constant']
+                    const_se = std_err['Constant']
+                elif 'const' in params:
+                    const = params['const']
+                    const_se = std_err['const']
+                else:
+                    const = np.nan
+                    const_se = np.nan
+                
+                alpha = params.get('alpha[1]', np.nan)
+                alpha_se = std_err.get('alpha[1]', np.nan)
+                
+                beta = params.get('beta[1]', np.nan)
+                beta_se = std_err.get('beta[1]', np.nan)
+                
+                gamma = params.get('gamma[1]', np.nan)
+                gamma_se = std_err.get('gamma[1]', np.nan)
+                
+                # Format values for display
+                def format_param(val):
+                    if pd.isna(val) or val is None:
+                        return "N/A"
+                    return f"{float(val):.6f}"
+                
+                params_egarch = pd.DataFrame({
+                    'Parameter': ['ω (Omega)', 'α (Alpha)', 'β (Beta)', 'γ (Gamma)'],
+                    'Coefficient': [format_param(const), format_param(alpha), format_param(beta), format_param(gamma)],
+                    'Std Error': [format_param(const_se), format_param(alpha_se), format_param(beta_se), format_param(gamma_se)]
+                })
+                st.dataframe(params_egarch, use_container_width=True)
+            except Exception as param_error:
+                st.info("⚠️ Model parameters could not be extracted")
             
             st.info("💡 **Note:** γ (Gamma) parameter captures asymmetric effects (leverage effect)")
             
