@@ -185,30 +185,23 @@ def get_sidebar_css() -> str:
         border-radius: 6px !important;
     }}
     
-    /* MultiSelect LABEL - RED TEXT, BOLD, CLEARLY VISIBLE ON DARK BACKGROUND */
+    /* HIDE the multiselect label completely since we use custom markdown label */
     [data-testid="stSidebar"] .stMultiSelect > label {{
-        color: #DC3545 !important;
-        background-color: transparent !important;
-        font-weight: 700 !important;
-        font-size: 14px !important;
-        margin-bottom: 0.5rem !important;
-        display: block !important;
-        visibility: visible !important;
+        display: none !important;
     }}
     
-    /* MultiSelect label span - RED TEXT, BOLD */
+    /* Hide label span */
     [data-testid="stSidebar"] .stMultiSelect > label > span {{
-        color: #DC3545 !important;
-        background-color: transparent !important;
-        font-weight: 700 !important;
-        font-size: 14px !important;
-        visibility: visible !important;
+        display: none !important;
     }}
     
-    /* Ensure label text is visible */
+    /* Hide all label elements */
+    [data-testid="stSidebar"] .stMultiSelect label {{
+        display: none !important;
+    }}
+    
     [data-testid="stSidebar"] .stMultiSelect label * {{
-        color: #DC3545 !important;
-        background-color: transparent !important;
+        display: none !important;
     }}
     
     [data-testid="stSidebar"] .stMultiSelect div[data-baseweb="select"] input {{
