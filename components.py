@@ -490,9 +490,9 @@ class Footer:
         st.markdown(f'<p class="footer-subtitle">{description}</p>', unsafe_allow_html=True)
         st.markdown(f'<p class="footer-author">{author}</p>', unsafe_allow_html=True)
         
-        # Buttons - STACKED VERTICALLY, CENTERED
+        # Buttons - ALL IN ONE MARKDOWN CALL TO KEEP FLEX LAYOUT INTACT
         if social_links:
-            st.markdown('<div class="footer-buttons">', unsafe_allow_html=True)
+            buttons_html = '<div class="footer-buttons">'
             
             for name, url in social_links.items():
                 if name == "LinkedIn":
@@ -505,12 +505,12 @@ class Footer:
                     emoji = "📧"
                     btn_class = "footer-btn btn-linkedin"
                 
-                st.markdown(
-                    f'<a href="{url}" target="_blank" class="{btn_class}">{emoji} {name}</a>',
-                    unsafe_allow_html=True
-                )
+                buttons_html += f'<a href="{url}" target="_blank" class="{btn_class}">{emoji} {name}</a>'
             
-            st.markdown('</div>', unsafe_allow_html=True)
+            buttons_html += '</div>'
+            
+            # RENDER ALL BUTTONS IN ONE CALL - PRESERVES FLEXBOX
+            st.markdown(buttons_html, unsafe_allow_html=True)
         
         # Divider
         st.markdown('<div class="footer-divider"></div>', unsafe_allow_html=True)
