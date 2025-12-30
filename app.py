@@ -157,12 +157,12 @@ with st.sidebar:
     
     # Configuration info
     with st.expander("⚙️ Selected Configuration"):
-        st.markdown(f"**Asset Class:** {asset_type}")
-        st.markdown(f"**Selected Asset:** {selected_asset}")
-        st.markdown(f"<span style='color: #DC3545; font-weight: 700;'>**Symbol:**</span> `{symbol}`", unsafe_allow_html=True)
-        st.markdown(f"**Years:** {years}")
-        st.markdown(f"**Forecast Days:** {forecast_days}")
-        st.markdown(f"**Models:** {', '.join(models)}")
+        st.markdown(f"**Asset Class:** <span style='color: #DC3545; font-weight: 700;'>{asset_type}</span>", unsafe_allow_html=True)
+        st.markdown(f"**Selected Asset:** <span style='color: #DC3545; font-weight: 700;'>{selected_asset}</span>", unsafe_allow_html=True)
+        st.markdown(f"**Symbol:** <span style='color: #DC3545; font-weight: 700; font-family: monospace;'>{symbol}</span>", unsafe_allow_html=True)
+        st.markdown(f"**Years:** <span style='color: #DC3545; font-weight: 700;'>{years}</span>", unsafe_allow_html=True)
+        st.markdown(f"**Forecast Days:** <span style='color: #DC3545; font-weight: 700;'>{forecast_days}</span>", unsafe_allow_html=True)
+        st.markdown(f"**Models:** <span style='color: #DC3545; font-weight: 700;'>{', '.join(models)}</span>", unsafe_allow_html=True)
     
     st.markdown("---")
     st.write("**About This Tool**")
