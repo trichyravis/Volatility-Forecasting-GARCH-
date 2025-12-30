@@ -184,17 +184,19 @@ def get_sidebar_css() -> str:
         border-radius: 6px !important;
     }}
     
-    /* MultiSelect LABEL - Make visible */
+    /* MultiSelect LABEL - RED TEXT on white background */
     [data-testid="stSidebar"] .stMultiSelect label {{
-        color: #333 !important;
+        color: #DC3545 !important;
         background-color: white !important;
-        font-weight: 600 !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
     }}
     
-    /* MultiSelect label text span */
+    /* MultiSelect label text span - RED */
     [data-testid="stSidebar"] .stMultiSelect label span {{
-        color: #333 !important;
+        color: #DC3545 !important;
         background-color: white !important;
+        font-weight: 700 !important;
     }}
     
     [data-testid="stSidebar"] .stMultiSelect div[data-baseweb="select"] input {{
@@ -249,13 +251,46 @@ def get_sidebar_css() -> str:
         color: #333 !important;
     }}
     
-    /* Slider styling in sidebar */
+    /* Slider styling - Professional appearance */
     [data-testid="stSidebar"] .stSlider {{
         color: white !important;
+        padding: 1rem 0 !important;
     }}
     
+    [data-testid="stSidebar"] .stSlider > label {{
+        color: white !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        margin-bottom: 0.5rem !important;
+    }}
+    
+    [data-testid="stSidebar"] .stSlider > div {{
+        margin-top: 0.5rem !important;
+    }}
+    
+    /* Slider track styling */
+    [data-testid="stSidebar"] .stSlider [role="slider"] {{
+        height: 8px !important;
+        background-color: #0077b5 !important;
+    }}
+    
+    /* Slider thumb (handle) - RED */
+    [data-testid="stSidebar"] .stSlider input[type="range"] {{
+        accent-color: #DC3545 !important;
+        width: 100% !important;
+        height: 8px !important;
+    }}
+    
+    /* Slider value text */
     [data-testid="stSidebar"] .stSlider > div > div > div {{
         color: white !important;
+        font-weight: 500 !important;
+    }}
+    
+    /* Slider min/max labels */
+    [data-testid="stSidebar"] .stSlider > div > label {{
+        color: #ccc !important;
+        font-size: 12px !important;
     }}
     
     [data-testid="stSidebar"] .stMultiSelect {{
