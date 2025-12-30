@@ -343,101 +343,126 @@ class Footer:
         st.markdown("""
         <style>
         .footer-simple {
-            text-align: center;
-            padding: 0.8rem 1rem;
-            margin-top: 1rem;
+            text-align: center !important;
+            padding: 0.8rem 1rem !important;
+            margin-top: 1rem !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
         
         .footer-title {
-            color: #003366;
-            font-size: 22px;
-            font-weight: 700;
-            margin: 0 0 0.2rem 0;
-            letter-spacing: 0.5px;
+            color: #003366 !important;
+            font-size: 22px !important;
+            font-weight: 700 !important;
+            margin: 0 auto 0.2rem auto !important;
+            letter-spacing: 0.5px !important;
+            text-align: center !important;
+            width: 100% !important;
+            display: block !important;
         }
         
         .footer-subtitle {
-            color: #0077b5;
-            font-size: 14px;
-            font-weight: 500;
-            margin: 0.2rem 0 0 0;
+            color: #0077b5 !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            margin: 0.2rem auto 0 auto !important;
+            text-align: center !important;
+            width: 100% !important;
+            display: block !important;
         }
         
         .footer-author {
-            color: #666;
-            font-size: 13px;
-            margin: 0.5rem 0 0.8rem 0;
+            color: #666 !important;
+            font-size: 13px !important;
+            margin: 0.5rem auto 0.8rem auto !important;
+            text-align: center !important;
+            width: 100% !important;
+            display: block !important;
         }
         
         .footer-buttons {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            margin: 0.8rem 0;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 1rem !important;
+            margin: 0.8rem auto !important;
+            width: 100% !important;
+            flex-wrap: wrap !important;
         }
         
         .footer-btn {
-            display: inline-block;
-            padding: 0.6rem 1.5rem;
-            border-radius: 6px;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0.6rem 1.5rem !important;
+            border-radius: 6px !important;
             color: white !important;
             text-decoration: none !important;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.2s !important;
+            border: none !important;
+            cursor: pointer !important;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
         }
         
         .footer-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
         }
         
         .btn-linkedin {
-            background: #0077b5;
+            background: #0077b5 !important;
         }
         
         .btn-linkedin:hover {
-            background: #005a87;
+            background: #005a87 !important;
             color: white !important;
         }
         
         .btn-github {
-            background: #2d2d2d;
+            background: #2d2d2d !important;
         }
         
         .btn-github:hover {
-            background: #1a1a1a;
+            background: #1a1a1a !important;
             color: white !important;
         }
         
         .footer-disclaimer {
-            color: #333;
-            font-size: 12px;
-            margin: 0.8rem 0;
-            line-height: 1.5;
+            color: #333 !important;
+            font-size: 12px !important;
+            margin: 0.8rem auto !important;
+            line-height: 1.5 !important;
+            text-align: center !important;
         }
         
         .footer-divider {
-            height: 1px;
-            background: #e0e0e0;
-            margin: 0.8rem 0;
+            height: 1px !important;
+            background: #e0e0e0 !important;
+            margin: 0.8rem auto !important;
+            width: 100% !important;
         }
         
         .footer-copyright {
-            color: #999;
-            font-size: 12px;
-            margin: 0.5rem 0 0.2rem 0;
+            color: #999 !important;
+            font-size: 12px !important;
+            margin: 0.5rem auto 0.2rem auto !important;
+            text-align: center !important;
         }
         
         .footer-credit {
-            color: #aaa;
-            font-size: 12px;
-            margin: 0.2rem 0;
-            font-style: italic;
+            color: #aaa !important;
+            font-size: 12px !important;
+            margin: 0.2rem auto !important;
+            font-style: italic !important;
+            text-align: center !important;
         }
         </style>
         """, unsafe_allow_html=True)
