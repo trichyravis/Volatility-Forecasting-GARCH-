@@ -1,3 +1,4 @@
+
 """
 ═══════════════════════════════════════════════════════════════════════════════
 STREAMLIT PROFESSIONAL DESIGN TEMPLATE - CONFIGURATION
@@ -83,28 +84,28 @@ SIDEBAR_CONFIG = {
 
 HERO_HEADER = {
     "background_gradient": f"linear-gradient(135deg, {COLORS['primary_dark']} 0%, {COLORS['primary_light']} 50%, {COLORS['primary_dark']} 100%)",
-    "padding": "2rem 2rem",
-    "border_radius": "20px",
+    "padding": "0.8rem 1rem",
+    "border_radius": "15px",
     "border_color": COLORS["primary_dark"],
-    "border_width": "4px",
-    "box_shadow": "0 12px 30px rgba(0, 51, 102, 0.4)",
+    "border_width": "3px",
+    "box_shadow": "0 8px 20px rgba(0, 51, 102, 0.3)",
     "max_width": "1200px",
     
     # Text styling
     "title_color": COLORS["text_light"],
-    "title_font_size": "32px",
+    "title_font_size": "22px",
     "title_font_weight": "900",
-    "title_letter_spacing": "2px",
+    "title_letter_spacing": "1.5px",
     
     "subtitle_color": COLORS["primary_lightest"],
-    "subtitle_font_size": "24px",
+    "subtitle_font_size": "14px",
     "subtitle_font_weight": "600",
     
     "description_color": "#D0E8FF",
-    "description_font_size": "14px",
+    "description_font_size": "12px",
     
     # Emoji styling
-    "emoji_size": "100px",
+    "emoji_size": "60px",
     "emoji_animation": "float",  # float, bounce, pulse, etc.
 }
 
