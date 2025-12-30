@@ -291,23 +291,27 @@ with tab1:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 with tab2:
-    st.markdown("#### 🔮 GARCH(1,1) Model Analysis & Forecast")
-    
-    with st.spinner("⏳ Fitting GARCH(1,1) model..."):
-        try:
-            garch_results, garch_forecast = VolatilityModels.fit_garch(
-                returns, 
-                forecast_periods=forecast_days
-            )
-            
-            col1, col2, col3 = st.columns(3)
-            
-            with col1:
-                st.metric("AIC", f"{garch_results.aic:.2f}")
-            with col2:
-                st.metric("BIC", f"{garch_results.bic:.2f}")
-            with col3:
-                st.metric("Log-Likelihood", f"{garch_results.loglikelihood:.2f}")
+    # Check if GARCH is selected
+    if "GARCH(1,1)" not in models and "Both" not in models:
+        st.info("ℹ️ **GARCH(1,1) model not selected.** Please select 'GARCH(1,1)' or 'Both' in the sidebar to view this analysis.")
+    else:
+        st.markdown("#### 🔮 GARCH(1,1) Model Analysis & Forecast")
+        
+        with st.spinner("⏳ Fitting GARCH(1,1) model..."):
+            try:
+                garch_results, garch_forecast = VolatilityModels.fit_garch(
+                    returns, 
+                    forecast_periods=forecast_days
+                )
+                
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    st.metric("AIC", f"{garch_results.aic:.2f}")
+                with col2:
+                    st.metric("BIC", f"{garch_results.bic:.2f}")
+                with col3:
+                    st.metric("Log-Likelihood", f"{garch_results.loglikelihood:.2f}")
             
             # Model parameters - SAFE EXTRACTION WITH BETTER LOGIC
             st.markdown("**Model Parameters:**")
@@ -434,9 +438,13 @@ with tab2:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 with tab3:
-    st.markdown("#### ⚡ EGARCH(1,1) Model Analysis & Forecast")
-    
-    with st.spinner("⏳ Fitting EGARCH(1,1) model..."):
+    # Check if EGARCH is selected
+    if "EGARCH(1,1)" not in models and "Both" not in models:
+        st.info("ℹ️ **EGARCH(1,1) model not selected.** Please select 'EGARCH(1,1)' or 'Both' in the sidebar to view this analysis.")
+    else:
+        st.markdown("#### ⚡ EGARCH(1,1) Model Analysis & Forecast")
+        
+        with st.spinner("⏳ Fitting EGARCH(1,1) model..."):
         try:
             egarch_results, egarch_forecast = VolatilityModels.fit_egarch(
                 returns,
