@@ -184,19 +184,22 @@ def get_sidebar_css() -> str:
         border-radius: 6px !important;
     }}
     
-    /* MultiSelect LABEL - RED TEXT on white background */
+    /* MultiSelect LABEL - RED TEXT, BOLD, CLEARLY VISIBLE */
     [data-testid="stSidebar"] .stMultiSelect label {{
         color: #DC3545 !important;
-        background-color: white !important;
+        background-color: transparent !important;
         font-weight: 700 !important;
         font-size: 14px !important;
+        margin-bottom: 0.5rem !important;
+        display: block !important;
     }}
     
-    /* MultiSelect label text span - RED */
+    /* MultiSelect label text span - RED TEXT */
     [data-testid="stSidebar"] .stMultiSelect label span {{
         color: #DC3545 !important;
-        background-color: white !important;
+        background-color: transparent !important;
         font-weight: 700 !important;
+        font-size: 14px !important;
     }}
     
     [data-testid="stSidebar"] .stMultiSelect div[data-baseweb="select"] input {{
