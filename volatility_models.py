@@ -104,29 +104,58 @@ class VolatilityModels:
     
     @staticmethod
     def extract_model_parameters(results) -> dict:
-        """Extract model parameters safely"""
+        """Extract model parameters safely - handles all parameter names"""
         try:
             params = results.params
             std_err = results.std_err
             
-            # Get Omega (Constant) - try multiple names
-            if 'Constant' in params:
-                omega = params['Constant']
-                omega_se = std_err['Constant']
-            elif 'const' in params:
-                omega = params['const']
-                omega_se = std_err['const']
-            else:
-                omega = None
-                omega_se = None
+            # Print all available parameters for debugging
+            print(f"Available parameters: {list(params.index)}")
+            
+            # Get Omega - try all possible names
+            omega = None
+            omega_se = None
+            for key in ['Constant', 'const', 'mu']:
+                if key in params:
+                    omega = float(params[key])
+                    omega_se = float(std_err[key])
+                    break
+            
+            # If still not found, check if it's the first parameter
+            if omega is None and len(params) > 0:
+                try:
+                    omega = float(params.iloc[0])
+                    omega_se = float(std_err.iloc[0])
+                except:
+                    omega = None
+                    omega_se = None
             
             # Get Alpha
-            alpha = params.get('alpha[1]', None)
-            alpha_se = std_err.get('alpha[1]', None) if alpha is not None else None
+            alpha = None
+            alpha_se = None
+            for key in params.index:
+                if 'alpha' in key.lower():
+                    alpha = float(params[key])
+                    alpha_se = float(std_err[key])
+                    break
             
             # Get Beta
-            beta = params.get('beta[1]', None)
-            beta_se = std_err.get('beta[1]', None) if beta is not None else None
+            beta = None
+            beta_se = None
+            for key in params.index:
+                if 'beta' in key.lower():
+                    beta = float(params[key])
+                    beta_se = float(std_err[key])
+                    break
+            
+            # Get Gamma (EGARCH only)
+            gamma = None
+            gamma_se = None
+            for key in params.index:
+                if 'gamma' in key.lower():
+                    gamma = float(params[key])
+                    gamma_se = float(std_err[key])
+                    break
             
             return {
                 "omega": omega,
@@ -135,6 +164,8 @@ class VolatilityModels:
                 "alpha_se": alpha_se,
                 "beta": beta,
                 "beta_se": beta_se,
+                "gamma": gamma,
+                "gamma_se": gamma_se,
             }
         except Exception as e:
             print(f"Parameter extraction error: {str(e)}")
