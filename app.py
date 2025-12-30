@@ -139,13 +139,11 @@ with st.sidebar:
     # Model selection with radio buttons - only ONE option can be selected
     st.markdown("<span style='color: #DC3545; font-weight: 700; font-size: 14px;'>🔧 Select Models:</span>", unsafe_allow_html=True)
     models = st.radio(
-        "Models",
+        "Choose a model:",
         options=["GARCH(1,1)", "EGARCH(1,1)", "Both"],
-        default="GARCH(1,1)",
-        help="Choose ONE volatility model for analysis",
-        key="model_selector",
-        label_visibility="collapsed",
-        horizontal=False
+        index=0,
+        help="Select ONE volatility model for analysis",
+        label_visibility="collapsed"
     )
     
     st.markdown("---")
