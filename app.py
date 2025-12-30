@@ -600,64 +600,14 @@ with tab5:
 
 st.markdown("---")
 
-# Create footer using pure Streamlit components
-st.markdown("""
-<style>
-    .footer-container {
-        text-align: center;
-        padding: 20px;
-        margin-top: 30px;
-        border-top: 2px solid #003366;
-        background-color: #f8f9fa;
-    }
-    .footer-title {
-        color: #003366;
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-    .footer-text {
-        color: #555;
-        font-size: 14px;
-        margin: 5px 0;
-    }
-    .footer-author {
-        color: #666;
-        font-size: 13px;
-        margin: 10px 0;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-col1, col2, col3 = st.columns([1, 2, 1])
-
-with col2:
-    st.markdown("### 🏔️ THE MOUNTAIN PATH - VOLATILITY FORECASTING PLATFORM")
-    st.markdown("**Professional GARCH & EGARCH Volatility Analysis**")
-    st.markdown("Prof. V. Ravichandran | 28+ Years Corporate Finance & Banking Experience")
-    
-    # Social links
-    st.markdown("")
-    st.markdown("---")
-    
-    col_a, col_b, col_c = st.columns([1, 1, 1])
-    with col_a:
-        st.markdown("[🔗 LinkedIn](https://www.linkedin.com/in/trichyravis)")
-    with col_b:
-        st.markdown("[🐙 GitHub](https://github.com/trichyravis)")
-    with col_c:
-        st.markdown("[📧 Email](mailto:contact@mountainpath.com)")
-    
-    st.markdown("---")
-    
-    # Disclaimer
-    st.warning("""
-    **⚠️ Disclaimer:** Educational Purpose Only.  
-    This tool is for research and educational purposes. Not financial advice.  
-    Always consult qualified financial advisors before making investment decisions.  
-    Past volatility does not guarantee future results.
-    """)
-    
-    st.markdown("")
-    st.markdown("© 2025 The Mountain Path - World of Finance | All Rights Reserved")
-    st.markdown("*Built with ❤️ using Streamlit, GARCH & EGARCH Models*")
+# Use the professional Footer component from template
+Footer.render(
+    title="🏔️ THE MOUNTAIN PATH - VOLATILITY FORECASTING PLATFORM",
+    description="Professional GARCH & EGARCH Volatility Analysis",
+    author="Prof. V. Ravichandran | 28+ Years Corporate Finance & Banking Experience",
+    social_links={
+        "LinkedIn": "https://www.linkedin.com/in/trichyravis",
+        "GitHub": "https://github.com/trichyravis"
+    },
+    disclaimer="⚠️ **DISCLAIMER:** Educational Purpose Only. This tool is for research and educational purposes. Not financial advice. Always consult qualified financial advisors before making investment decisions. Past volatility does not guarantee future results."
+)
