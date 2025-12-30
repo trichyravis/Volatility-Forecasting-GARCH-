@@ -1,3 +1,4 @@
+
 """
 ═══════════════════════════════════════════════════════════════════════════════
 THE MOUNTAIN PATH - WORLD OF FINANCE
@@ -66,19 +67,17 @@ with st.sidebar:
     st.markdown("---")
     
     # Asset selection
-    asset_type = st.selectbox(
-        "**Asset Class:**",
-        options=["Equity Indices", "Nifty Stocks", "International Indices", "Commodities"],
-        help="Choose asset class"
-    )
+    col_asset_type = st.columns(1)
+    with col_asset_type[0]:
+        asset_type = st.selectbox(
+            "**Asset Class:**",
+            options=["Equity Indices", "Nifty Stocks", "International Indices", "Commodities"],
+            help="Choose asset class",
+            key="asset_class_selector"
+        )
     
     # Asset choice based on class
     if asset_type == "Equity Indices":
-        assets = {
-            "NIFTY 50": "^NSEBANK",  # Placeholder
-            "NIFTY Bank": "^NSEBANK",
-            "NIFTY IT": "^CNXIT",
-        }
         available_assets = ["NIFTY 50 Index", "NIFTY Bank Index", "NIFTY IT Index"]
         symbols = ["^NSEI", "^NSEBANK", "^CNXIT"]
     
@@ -100,11 +99,14 @@ with st.sidebar:
         available_assets = ["Gold", "Silver", "Crude Oil", "Natural Gas"]
         symbols = ["GC=F", "SI=F", "CL=F", "NG=F"]
     
-    selected_asset = st.selectbox(
-        "**Select Asset:**",
-        options=available_assets,
-        help="Choose specific asset"
-    )
+    col_asset_select = st.columns(1)
+    with col_asset_select[0]:
+        selected_asset = st.selectbox(
+            "**Select Asset:**",
+            options=available_assets,
+            help="Choose specific asset",
+            key="asset_selector"
+        )
     
     asset_index = available_assets.index(selected_asset)
     symbol = symbols[asset_index]
@@ -113,9 +115,9 @@ with st.sidebar:
     
     # Period selection
     st.write("### ⏱️ TIME PERIOD")
-    years = st.slider("**Years of Historical Data:**", 1, 10, 3, help="Historical data for model training")
+    years = st.slider("**Years of Historical Data:**", 1, 10, 3, help="Historical data for model training", key="years_slider")
     
-    forecast_days = st.slider("**Forecast Period (Days):**", 5, 60, 20, help="Number of days to forecast")
+    forecast_days = st.slider("**Forecast Period (Days):**", 5, 60, 20, help="Number of days to forecast", key="forecast_days_slider")
     
     st.markdown("---")
     
@@ -124,7 +126,8 @@ with st.sidebar:
         "**Select Models:**",
         options=["GARCH(1,1)", "EGARCH(1,1)", "Both"],
         default=["GARCH(1,1)"],
-        help="Choose volatility models to compare"
+        help="Choose volatility models to compare",
+        key="model_selector"
     )
     
     st.markdown("---")
@@ -597,13 +600,71 @@ with tab5:
 
 st.markdown("---")
 
-Footer.render(
-    title="THE MOUNTAIN PATH - VOLATILITY FORECASTING PLATFORM",
-    description="Professional GARCH & EGARCH Volatility Analysis",
-    author="Prof. V. Ravichandran | 28+ Years Finance Experience",
-    social_links={
-        "LinkedIn": "https://www.linkedin.com/in/trichyravis",
-        "GitHub": "https://github.com/trichyravis"
-    },
-    disclaimer="⚠️ Educational Purpose Only. This tool is for research and educational purposes. Not financial advice. Always consult qualified financial advisors before making investment decisions. Past volatility does not guarantee future results."
-)
+# Use custom HTML/CSS for footer
+footer_html = """
+<div style="
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    border-top: 2px solid #003366;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+">
+    <h3 style="color: #003366; margin-bottom: 10px;">
+        🏔️ THE MOUNTAIN PATH - VOLATILITY FORECASTING PLATFORM
+    </h3>
+    <p style="color: #555; font-size: 14px; margin: 5px 0;">
+        Professional GARCH & EGARCH Volatility Analysis
+    </p>
+    <p style="color: #666; font-size: 13px; margin: 10px 0;">
+        <strong>Prof. V. Ravichandran</strong> | 28+ Years Corporate Finance & Banking Experience
+    </p>
+    
+    <div style="margin: 15px 0;">
+        <a href="https://www.linkedin.com/in/trichyravis" target="_blank" style="
+            display: inline-block;
+            margin: 0 10px;
+            padding: 8px 15px;
+            background-color: #0077b5;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 12px;
+        ">
+            🔗 LinkedIn
+        </a>
+        <a href="https://github.com/trichyravis" target="_blank" style="
+            display: inline-block;
+            margin: 0 10px;
+            padding: 8px 15px;
+            background-color: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 12px;
+        ">
+            🐙 GitHub
+        </a>
+    </div>
+    
+    <div style="
+        background-color: #fff3cd;
+        border: 1px solid #ffc107;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 15px;
+        font-size: 12px;
+        color: #333;
+    ">
+        <strong>⚠️ Disclaimer:</strong> Educational Purpose Only. This tool is for research and educational purposes. 
+        Not financial advice. Always consult qualified financial advisors before making investment decisions. 
+        Past volatility does not guarantee future results.
+    </div>
+    
+    <p style="color: #999; font-size: 11px; margin-top: 15px;">
+        © 2025 The Mountain Path - World of Finance | All Rights Reserved
+    </p>
+</div>
+"""
+
+st.markdown(footer_html, unsafe_allow_html=True)
