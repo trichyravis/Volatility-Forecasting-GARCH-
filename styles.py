@@ -187,14 +187,44 @@ def get_sidebar_css() -> str:
     [data-testid="stSidebar"] .stMultiSelect div[data-baseweb="select"] input {{
         color: #333 !important;
         background-color: white !important;
+        font-size: 14px !important;
     }}
     
-    /* Multi-select tag styling - Red */
+    /* Multi-select container text */
+    [data-testid="stSidebar"] .stMultiSelect {{
+        color: #333 !important;
+    }}
+    
+    /* Multi-select input field - VISIBLE TEXT */
+    [data-testid="stSidebar"] .stMultiSelect [data-baseweb="select"] {{
+        color: #333 !important;
+    }}
+    
+    [data-testid="stSidebar"] .stMultiSelect [data-baseweb="select"] span {{
+        color: #333 !important;
+        background-color: white !important;
+    }}
+    
+    /* Multi-select tag styling - Red with white text */
     [data-testid="stSidebar"] .stMultiSelect [data-baseweb="tag"] {{
         background-color: #DC3545 !important;
         color: white !important;
         border-radius: 4px !important;
         font-weight: 600 !important;
+        padding: 4px 8px !important;
+    }}
+    
+    /* Multi-select option styling */
+    [data-testid="stSidebar"] .stMultiSelect [role="option"] {{
+        background-color: white !important;
+        color: #333 !important;
+    }}
+    
+    /* Multi-select button styling */
+    [data-testid="stSidebar"] .stMultiSelect [role="button"] {{
+        background-color: white !important;
+        color: #333 !important;
+        border: 2px solid #DC3545 !important;
     }}
     
     /* Ensure text is visible in selectbox - ALL states */
