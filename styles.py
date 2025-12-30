@@ -475,7 +475,7 @@ def get_footer_html(
     social_links: dict = None
 ) -> str:
     """
-    Generate footer HTML
+    Generate footer HTML with inline styles for buttons
     
     Args:
         title: Footer title
@@ -491,20 +491,49 @@ def get_footer_html(
     social_html = ""
     if social_links:
         for name, url in social_links.items():
-            icon_emoji = "🔗" if name == "LinkedIn" else "🐙" if name == "GitHub" else "📧"
+            if name == "LinkedIn":
+                icon_emoji = "🔗"
+                bg_color = "#0077B5"
+            elif name == "GitHub":
+                icon_emoji = "🐙"
+                bg_color = "#333333"
+            else:
+                icon_emoji = "📧"
+                bg_color = "#0077B5"
+            
             social_html += f"""
-            <a href="{url}" target="_blank" class="primary-button" style="margin: 0 0.5rem;">
+            <a href="{url}" target="_blank" style="
+                display: inline-block;
+                background-color: {bg_color};
+                color: white;
+                padding: 10px 20px;
+                margin: 0 8px;
+                border-radius: 5px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 14px;
+            ">
                 {icon_emoji} {name}
             </a>
             """
     
     return f"""
     <div style="text-align: center; color: {FOOTER_CONFIG['text_color']}; padding: {FOOTER_CONFIG['padding']};">
-        <p><strong>{title}</strong></p>
-        <p>{description}</p>
-        <p>{author}</p>
-        <p style="margin-top: 1rem;">
+        <h3 style="color: #003366; font-weight: bold;">{title}</h3>
+        <p style="color: #666; font-size: 14px;">{description}</p>
+        <p style="color: #666; font-size: 13px;">{author}</p>
+        <div style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
             {social_html}
+        </div>
+        <div style="background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 5px; padding: 10px; margin: 1rem 0; font-size: 12px; color: #333;">
+            <strong>⚠️ Disclaimer:</strong> Educational Purpose Only. This tool is for research and educational purposes. Not financial advice.
+            Always consult qualified financial advisors before making investment decisions. Past volatility does not guarantee future results.
+        </div>
+        <p style="color: #999; font-size: 11px; margin-top: 1.5rem;">
+            © 2025 The Mountain Path - World of Finance | All Rights Reserved
+        </p>
+        <p style="color: #999; font-size: 11px;">
+            Built with ❤️ using Streamlit, GARCH & EGARCH Models
         </p>
     </div>
     """
