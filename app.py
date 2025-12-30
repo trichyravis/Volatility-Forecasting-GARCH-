@@ -309,44 +309,62 @@ with tab2:
             with col3:
                 st.metric("Log-Likelihood", f"{garch_results.loglikelihood:.2f}")
             
-            # Model parameters - SAFE EXTRACTION
+            # Model parameters - SAFE EXTRACTION WITH BETTER LOGIC
             st.markdown("**Model Parameters:**")
             try:
-                # Try to get parameters safely
                 params = garch_results.params
                 std_err = garch_results.std_err
                 
-                # Try multiple names for constants
-                if 'Constant' in params:
-                    const = params['Constant']
-                    const_se = std_err['Constant']
-                elif 'const' in params:
-                    const = params['const']
-                    const_se = std_err['const']
-                else:
-                    const = np.nan
-                    const_se = np.nan
+                print(f"DEBUG - Available GARCH params: {list(params.index)}")
                 
-                alpha = params.get('alpha[1]', np.nan)
-                alpha_se = std_err.get('alpha[1]', np.nan)
+                # Get Omega - try multiple names and first position
+                omega = None
+                omega_se = None
+                for key in ['Constant', 'const', 'mu']:
+                    if key in params:
+                        omega = float(params[key])
+                        omega_se = float(std_err[key])
+                        break
                 
-                beta = params.get('beta[1]', np.nan)
-                beta_se = std_err.get('beta[1]', np.nan)
+                if omega is None and len(params) > 0:
+                    try:
+                        omega = float(params.iloc[0])
+                        omega_se = float(std_err.iloc[0])
+                    except:
+                        pass
+                
+                # Get Alpha
+                alpha = None
+                alpha_se = None
+                for key in params.index:
+                    if 'alpha' in str(key).lower():
+                        alpha = float(params[key])
+                        alpha_se = float(std_err[key])
+                        break
+                
+                # Get Beta
+                beta = None
+                beta_se = None
+                for key in params.index:
+                    if 'beta' in str(key).lower():
+                        beta = float(params[key])
+                        beta_se = float(std_err[key])
+                        break
                 
                 # Format values for display
                 def format_param(val):
-                    if pd.isna(val) or val is None:
+                    if val is None or pd.isna(val):
                         return "N/A"
                     return f"{float(val):.6f}"
                 
                 params_garch = pd.DataFrame({
                     'Parameter': ['ω (Omega)', 'α (Alpha)', 'β (Beta)'],
-                    'Coefficient': [format_param(const), format_param(alpha), format_param(beta)],
-                    'Std Error': [format_param(const_se), format_param(alpha_se), format_param(beta_se)]
+                    'Coefficient': [format_param(omega), format_param(alpha), format_param(beta)],
+                    'Std Error': [format_param(omega_se), format_param(alpha_se), format_param(beta_se)]
                 })
                 st.dataframe(params_garch, use_container_width=True)
             except Exception as param_error:
-                st.info("⚠️ Model parameters could not be extracted")
+                st.info(f"⚠️ Parameter extraction issue: {str(param_error)}")
                 print(f"Parameter extraction error: {param_error}")
             
             # Forecast visualization
@@ -434,46 +452,71 @@ with tab3:
             with col3:
                 st.metric("Log-Likelihood", f"{egarch_results.loglikelihood:.2f}")
             
-            # Model parameters - SAFE EXTRACTION
+            # Model parameters - SAFE EXTRACTION WITH BETTER LOGIC
             st.markdown("**Model Parameters:**")
             try:
                 params = egarch_results.params
                 std_err = egarch_results.std_err
                 
-                # Try multiple names for constants
-                if 'Constant' in params:
-                    const = params['Constant']
-                    const_se = std_err['Constant']
-                elif 'const' in params:
-                    const = params['const']
-                    const_se = std_err['const']
-                else:
-                    const = np.nan
-                    const_se = np.nan
+                print(f"DEBUG - Available EGARCH params: {list(params.index)}")
                 
-                alpha = params.get('alpha[1]', np.nan)
-                alpha_se = std_err.get('alpha[1]', np.nan)
+                # Get Omega - try multiple names and first position
+                omega = None
+                omega_se = None
+                for key in ['Constant', 'const', 'mu']:
+                    if key in params:
+                        omega = float(params[key])
+                        omega_se = float(std_err[key])
+                        break
                 
-                beta = params.get('beta[1]', np.nan)
-                beta_se = std_err.get('beta[1]', np.nan)
+                if omega is None and len(params) > 0:
+                    try:
+                        omega = float(params.iloc[0])
+                        omega_se = float(std_err.iloc[0])
+                    except:
+                        pass
                 
-                gamma = params.get('gamma[1]', np.nan)
-                gamma_se = std_err.get('gamma[1]', np.nan)
+                # Get Alpha
+                alpha = None
+                alpha_se = None
+                for key in params.index:
+                    if 'alpha' in str(key).lower():
+                        alpha = float(params[key])
+                        alpha_se = float(std_err[key])
+                        break
+                
+                # Get Beta
+                beta = None
+                beta_se = None
+                for key in params.index:
+                    if 'beta' in str(key).lower():
+                        beta = float(params[key])
+                        beta_se = float(std_err[key])
+                        break
+                
+                # Get Gamma
+                gamma = None
+                gamma_se = None
+                for key in params.index:
+                    if 'gamma' in str(key).lower():
+                        gamma = float(params[key])
+                        gamma_se = float(std_err[key])
+                        break
                 
                 # Format values for display
                 def format_param(val):
-                    if pd.isna(val) or val is None:
+                    if val is None or pd.isna(val):
                         return "N/A"
                     return f"{float(val):.6f}"
                 
                 params_egarch = pd.DataFrame({
                     'Parameter': ['ω (Omega)', 'α (Alpha)', 'β (Beta)', 'γ (Gamma)'],
-                    'Coefficient': [format_param(const), format_param(alpha), format_param(beta), format_param(gamma)],
-                    'Std Error': [format_param(const_se), format_param(alpha_se), format_param(beta_se), format_param(gamma_se)]
+                    'Coefficient': [format_param(omega), format_param(alpha), format_param(beta), format_param(gamma)],
+                    'Std Error': [format_param(omega_se), format_param(alpha_se), format_param(beta_se), format_param(gamma_se)]
                 })
                 st.dataframe(params_egarch, use_container_width=True)
             except Exception as param_error:
-                st.info("⚠️ Model parameters could not be extracted")
+                st.info(f"⚠️ Parameter extraction issue: {str(param_error)}")
             
             st.info("💡 **Note:** γ (Gamma) parameter captures asymmetric effects (leverage effect)")
             
