@@ -344,44 +344,51 @@ class Footer:
         <style>
         .footer-simple {
             text-align: center !important;
-            padding: 0.8rem 1rem !important;
-            margin-top: 1rem !important;
+            padding: 0.3rem 1rem !important;
+            margin-top: 0.5rem !important;
             width: 100% !important;
             max-width: 100% !important;
             display: flex !important;
             flex-direction: column !important;
             align-items: center !important;
             justify-content: center !important;
+            gap: 0.2rem !important;
         }
         
         .footer-title {
             color: #003366 !important;
-            font-size: 22px !important;
+            font-size: 18px !important;
             font-weight: 700 !important;
-            margin: 0 auto 0.2rem auto !important;
+            margin: 0 auto !important;
+            padding: 0 !important;
             letter-spacing: 0.5px !important;
             text-align: center !important;
             width: 100% !important;
             display: block !important;
+            line-height: 1.2 !important;
         }
         
         .footer-subtitle {
             color: #0077b5 !important;
-            font-size: 14px !important;
+            font-size: 12px !important;
             font-weight: 500 !important;
-            margin: 0.2rem auto 0 auto !important;
+            margin: 0 auto !important;
+            padding: 0 !important;
             text-align: center !important;
             width: 100% !important;
             display: block !important;
+            line-height: 1.2 !important;
         }
         
         .footer-author {
             color: #666 !important;
-            font-size: 13px !important;
-            margin: 0.5rem auto 0.8rem auto !important;
+            font-size: 11px !important;
+            margin: 0 auto !important;
+            padding: 0 !important;
             text-align: center !important;
             width: 100% !important;
             display: block !important;
+            line-height: 1.2 !important;
         }
         
         .footer-buttons {
@@ -389,27 +396,29 @@ class Footer:
             flex-direction: row !important;
             align-items: center !important;
             justify-content: center !important;
-            gap: 1rem !important;
-            margin: 0.8rem auto !important;
+            gap: 0.8rem !important;
+            margin: 0.3rem auto 0.3rem auto !important;
             width: 100% !important;
-            flex-wrap: wrap !important;
+            flex-wrap: nowrap !important;
+            padding: 0 !important;
         }
         
         .footer-btn {
             display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
-            padding: 0.6rem 1.5rem !important;
-            border-radius: 6px !important;
+            padding: 0.5rem 1.2rem !important;
+            border-radius: 5px !important;
             color: white !important;
             text-decoration: none !important;
             font-weight: 600 !important;
-            font-size: 14px !important;
+            font-size: 13px !important;
             transition: all 0.2s !important;
             border: none !important;
             cursor: pointer !important;
             white-space: nowrap !important;
             flex-shrink: 0 !important;
+            margin: 0 !important;
         }
         
         .footer-btn:hover {
@@ -437,32 +446,38 @@ class Footer:
         
         .footer-disclaimer {
             color: #333 !important;
-            font-size: 12px !important;
-            margin: 0.8rem auto !important;
-            line-height: 1.5 !important;
+            font-size: 11px !important;
+            margin: 0.3rem auto !important;
+            padding: 0 !important;
+            line-height: 1.3 !important;
             text-align: center !important;
+            width: 100% !important;
         }
         
         .footer-divider {
             height: 1px !important;
             background: #e0e0e0 !important;
-            margin: 0.8rem auto !important;
+            margin: 0.3rem auto !important;
             width: 100% !important;
         }
         
         .footer-copyright {
             color: #999 !important;
-            font-size: 12px !important;
-            margin: 0.5rem auto 0.2rem auto !important;
+            font-size: 11px !important;
+            margin: 0.2rem auto !important;
+            padding: 0 !important;
             text-align: center !important;
+            line-height: 1.2 !important;
         }
         
         .footer-credit {
             color: #aaa !important;
-            font-size: 12px !important;
+            font-size: 11px !important;
             margin: 0.2rem auto !important;
+            padding: 0 !important;
             font-style: italic !important;
             text-align: center !important;
+            line-height: 1.2 !important;
         }
         </style>
         """, unsafe_allow_html=True)
