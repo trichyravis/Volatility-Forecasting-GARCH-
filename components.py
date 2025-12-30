@@ -326,7 +326,7 @@ class StatsDisplay:
 class Footer:
     """
     Simple, clean, professional footer component
-    Minimal design - no fancy effects
+    Centered layout, minimal design
     """
     
     @staticmethod
@@ -337,9 +337,9 @@ class Footer:
         social_links: Optional[Dict[str, str]] = None,
         disclaimer: str = ""
     ):
-        """Render simple, clean footer"""
+        """Render simple, clean, centered footer"""
         
-        # Simple CSS - minimal styling
+        # Simple CSS - centered layout
         st.markdown("""
         <style>
         .footer-simple {
@@ -371,10 +371,10 @@ class Footer:
         
         .footer-buttons {
             display: flex;
-            justify-content: center;
-            gap: 1rem;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.7rem;
             margin: 1.5rem 0;
-            flex-wrap: wrap;
         }
         
         .footer-btn {
@@ -412,16 +412,10 @@ class Footer:
         }
         
         .footer-disclaimer {
-            background: #fff8dc;
-            border: 2px solid #ffc107;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1.5rem 0;
-            font-size: 12px;
             color: #333;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+            font-size: 12px;
+            margin: 1.5rem 0;
+            line-height: 1.5;
         }
         
         .footer-divider {
@@ -445,15 +439,15 @@ class Footer:
         </style>
         """, unsafe_allow_html=True)
         
-        # Render
+        # Render - all centered
         st.markdown('<div class="footer-simple">', unsafe_allow_html=True)
         
-        # Title section
+        # Title section - CENTERED
         st.markdown(f'<p class="footer-title">{title}</p>', unsafe_allow_html=True)
         st.markdown(f'<p class="footer-subtitle">{description}</p>', unsafe_allow_html=True)
         st.markdown(f'<p class="footer-author">{author}</p>', unsafe_allow_html=True)
         
-        # Buttons
+        # Buttons - STACKED VERTICALLY, CENTERED
         if social_links:
             st.markdown('<div class="footer-buttons">', unsafe_allow_html=True)
             
@@ -478,14 +472,17 @@ class Footer:
         # Divider
         st.markdown('<div class="footer-divider"></div>', unsafe_allow_html=True)
         
-        # Disclaimer
+        # Disclaimer - CENTERED TEXT ONLY (NO BOX!)
         if disclaimer:
             st.markdown(
-                f'<div class="footer-disclaimer"><strong>⚠️ DISCLAIMER:</strong> {disclaimer}</div>',
+                f'<p class="footer-disclaimer">⚠️ <strong>DISCLAIMER:</strong> {disclaimer}</p>',
                 unsafe_allow_html=True
             )
         
-        # Copyright
+        # Divider
+        st.markdown('<div class="footer-divider"></div>', unsafe_allow_html=True)
+        
+        # Copyright - CENTERED
         st.markdown('<p class="footer-copyright">© 2025 The Mountain Path - World of Finance | All Rights Reserved</p>', unsafe_allow_html=True)
         st.markdown('<p class="footer-credit">Built with ❤️ using Streamlit, GARCH & EGARCH Models</p>', unsafe_allow_html=True)
         
