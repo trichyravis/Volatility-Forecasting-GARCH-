@@ -141,6 +141,46 @@ def get_sidebar_css() -> str:
         color: {SIDEBAR_CONFIG['link_hover_color']} !important;
         text-decoration: underline;
     }}
+    
+    /* FIX: Selectbox visibility in dark sidebar */
+    [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] {{
+        background-color: white !important;
+        border: 2px solid #0077b5 !important;
+        border-radius: 6px !important;
+    }}
+    
+    [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] > div {{
+        background-color: white !important;
+        color: #333 !important;
+    }}
+    
+    [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] input {{
+        color: #333 !important;
+        background-color: white !important;
+    }}
+    
+    [data-testid="stSidebar"] .stSelectbox [role="button"] {{
+        background-color: white !important;
+        color: #333 !important;
+    }}
+    
+    [data-testid="stSidebar"] .stSelectbox [role="option"] {{
+        background-color: white !important;
+        color: #333 !important;
+    }}
+    
+    /* Slider styling in sidebar */
+    [data-testid="stSidebar"] .stSlider {{
+        color: white !important;
+    }}
+    
+    [data-testid="stSidebar"] .stSlider > div > div > div {{
+        color: white !important;
+    }}
+    
+    [data-testid="stSidebar"] .stMultiSelect {{
+        background-color: white !important;
+    }}
     """
 
 def get_hero_css() -> str:
