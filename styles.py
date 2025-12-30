@@ -184,6 +184,19 @@ def get_sidebar_css() -> str:
         border-radius: 6px !important;
     }}
     
+    /* MultiSelect LABEL - Make visible */
+    [data-testid="stSidebar"] .stMultiSelect label {{
+        color: #333 !important;
+        background-color: white !important;
+        font-weight: 600 !important;
+    }}
+    
+    /* MultiSelect label text span */
+    [data-testid="stSidebar"] .stMultiSelect label span {{
+        color: #333 !important;
+        background-color: white !important;
+    }}
+    
     [data-testid="stSidebar"] .stMultiSelect div[data-baseweb="select"] input {{
         color: #333 !important;
         background-color: white !important;
