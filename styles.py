@@ -336,7 +336,7 @@ def get_hero_css() -> str:
     
     .hero-text-right {{
         flex: 1;
-        text-align: right;
+        text-align: center;
     }}
     
     .hero-text-right h1 {{
