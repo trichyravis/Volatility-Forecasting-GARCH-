@@ -155,8 +155,8 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Debug info
-    with st.expander("🔧 Debug Info"):
+    # Configuration info
+    with st.expander("⚙️ Selected Configuration"):
         st.write(f"**Asset Class:** {asset_type}")
         st.write(f"**Selected Asset:** {selected_asset}")
         st.write(f"**Symbol:** `{symbol}`")
