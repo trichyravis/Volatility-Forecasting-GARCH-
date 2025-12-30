@@ -494,14 +494,20 @@ with tab3:
                         beta_se = float(std_err[key])
                         break
                 
-                # Get Gamma
+                # Get Gamma - try multiple variations
                 gamma = None
                 gamma_se = None
                 for key in params.index:
-                    if 'gamma' in str(key).lower():
-                        gamma = float(params[key])
-                        gamma_se = float(std_err[key])
-                        break
+                    key_lower = str(key).lower()
+                    # Try multiple possible gamma names
+                    if any(g in key_lower for g in ['gamma', 'leverage', 'asymmetry']):
+                        try:
+                            gamma = float(params[key])
+                            gamma_se = float(std_err[key])
+                            print(f"Found Gamma as: {key}")
+                            break
+                        except:
+                            continue
                 
                 # Format values for display
                 def format_param(val):
@@ -515,10 +521,15 @@ with tab3:
                     'Std Error': [format_param(omega_se), format_param(alpha_se), format_param(beta_se), format_param(gamma_se)]
                 })
                 st.dataframe(params_egarch, use_container_width=True)
+                
+                # Show different note based on whether Gamma was estimated
+                if gamma is None:
+                    st.info("💡 **Note:** γ (Gamma) parameter not estimated. This can occur with certain model specifications or data characteristics. The asymmetry/leverage effect may be constrained or not identified in this dataset.")
+                else:
+                    st.info("💡 **Note:** γ (Gamma) parameter captures asymmetric effects (leverage effect) - negative shocks have larger impact on volatility than positive shocks")
             except Exception as param_error:
                 st.info(f"⚠️ Parameter extraction issue: {str(param_error)}")
-            
-            st.info("💡 **Note:** γ (Gamma) parameter captures asymmetric effects (leverage effect)")
+                print(f"EGARCH param error: {param_error}")
             
             # Forecast visualization
             st.markdown("**Volatility Forecast:**")
