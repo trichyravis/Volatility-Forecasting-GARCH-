@@ -309,22 +309,39 @@ with tab2:
             with col3:
                 st.metric("Log-Likelihood", f"{garch_results.loglikelihood:.2f}")
             
-            # Model parameters
+            # Model parameters - SAFE EXTRACTION
             st.markdown("**Model Parameters:**")
-            params_garch = pd.DataFrame({
-                'Parameter': ['ω (Omega)', 'α (Alpha)', 'β (Beta)'],
-                'Coefficient': [
-                    garch_results.params['Constant'],
-                    garch_results.params['alpha[1]'],
-                    garch_results.params['beta[1]']
-                ],
-                'Std Error': [
-                    garch_results.std_err['Constant'],
-                    garch_results.std_err['alpha[1]'],
-                    garch_results.std_err['beta[1]']
-                ]
-            })
-            st.dataframe(params_garch, use_container_width=True)
+            try:
+                # Try to get parameters safely
+                params = garch_results.params
+                std_err = garch_results.std_err
+                
+                # Try multiple names for constants
+                if 'Constant' in params:
+                    const = params['Constant']
+                    const_se = std_err['Constant']
+                elif 'const' in params:
+                    const = params['const']
+                    const_se = std_err['const']
+                else:
+                    const = np.nan
+                    const_se = np.nan
+                
+                alpha = params.get('alpha[1]', np.nan)
+                alpha_se = std_err.get('alpha[1]', np.nan)
+                
+                beta = params.get('beta[1]', np.nan)
+                beta_se = std_err.get('beta[1]', np.nan)
+                
+                params_garch = pd.DataFrame({
+                    'Parameter': ['ω (Omega)', 'α (Alpha)', 'β (Beta)'],
+                    'Coefficient': [const, alpha, beta],
+                    'Std Error': [const_se, alpha_se, beta_se]
+                })
+                st.dataframe(params_garch, use_container_width=True)
+            except Exception as param_error:
+                st.info("⚠️ Model parameters could not be extracted")
+                print(f"Parameter extraction error: {param_error}")
             
             # Forecast visualization
             st.markdown("**Volatility Forecast:**")
